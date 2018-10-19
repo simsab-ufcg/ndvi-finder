@@ -31,7 +31,26 @@ def parse_path_and_rows(filename):
   return parsed_data
 
 def parse_time_periods(filename):
-  return []
+  parsed_data = []
+  with open(filename) as csvfile:
+    csv_reader = csv.reader(csvfile, delimiter = ',')
+    
+    header = csv_reader.next()
+
+    region_name_index = header.index('REGION_NAME')
+    start_date_index = header.index('START_DATE')
+    end_date_index = header.index('END_DATE')
+
+    for line in csv_reader:
+      
+      line_obj = {}
+      line_obj['id'] = line[region_name_index]
+      line_obj['start_date'] = line[start_date_index]
+      line_obj['end_date'] = line[end_date_index]
+
+      parsed_data.append(line_obj)
+  return parsed_data      
+
 
 class Downloader():
   def setup(self):
@@ -69,7 +88,7 @@ class Downloader():
             products.append(product_obj)
     return products
 
-  def download(path_and_rows_file, time_periods, output_directory):
+  def download(self, path_and_rows_file, time_periods, output_directory):
 
     pass
 
@@ -84,5 +103,6 @@ if __name__ == '__main__':
   output_directory = sys.argv[3]
   downloader = Downloader()
   pprint(path_and_rows)
-  downloader.download(path_and_rows_file, time_periods, output_directory)
+  pprint(time_periods)
+  downloader.download(path_and_rows, time_periods, output_directory)
   
