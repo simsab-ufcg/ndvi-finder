@@ -1,5 +1,7 @@
 import subprocess
 import csv
+import sys
+from pprint import pprint
 
 def get_processing_date_from_product_id(product_id):
   """
@@ -7,6 +9,29 @@ def get_processing_date_from_product_id(product_id):
   """
   fields = product_id.split('_')
   return fields[4]
+
+def parse_path_and_rows(filename):
+  parsed_data = []
+  with open(filename) as open_file:
+    for line in open_file:
+
+      line_sp = line.split(' ')
+      line_obj = {}
+      line_obj['id'] = line_sp[0]
+      line_obj['scenes'] = []
+      
+      for i in xrange(1, (len(line_sp) - 1)/2 + 1):
+        scene_obj = {}
+        scene_obj['path'] = line_sp[2 * i - 1]
+        scene_obj['row'] = line_sp[2 * i]
+        line_obj['scenes'].append(scene_obj)
+      
+      parsed_data.append(line_obj)
+  
+  return parsed_data
+
+def parse_time_periods(filename):
+  return []
 
 class Downloader():
   def setup(self):
@@ -34,15 +59,30 @@ class Downloader():
           if(end_date and processing_date > end_date):
             is_valid = False
           if(is_valid):
+
             product_obj = {}
             product_obj['product_id'] = product_id
             product_obj['path'] = path
             product_obj['row'] = row
             product_obj['dowload_url'] = product[dowload_url_index]
+
             products.append(product_obj)
     return products
 
+  def download(path_and_rows_file, time_periods, output_directory):
+
+    pass
+
 
 if __name__ == '__main__':
-  d = Downloader()
-  print(d.search(216, 66, "20170801", "20170930"))
+  if(len(sys.argv) != 4):
+    print('Incorrect number of arguments')
+    exit()
+  print(sys.argv)
+  path_and_rows = parse_path_and_rows(sys.argv[1])
+  time_periods = parse_time_periods(sys.argv[2])
+  output_directory = sys.argv[3]
+  downloader = Downloader()
+  pprint(path_and_rows)
+  downloader.download(path_and_rows_file, time_periods, output_directory)
+  
