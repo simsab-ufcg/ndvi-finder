@@ -11,27 +11,24 @@ def get_processing_date_from_product_id(product_id):
   return fields[4]
 
 def parse_path_and_rows(filename):
-  parsed_data = []
+  parsed_data = {}
   with open(filename) as open_file:
     for line in open_file:
 
       line_sp = line.split(' ')
-      line_obj = {}
-      line_obj['id'] = line_sp[0]
-      line_obj['scenes'] = []
+      id = line_sp[0]
+      parsed_data[id] = []
       
       for i in xrange(1, (len(line_sp) - 1)/2 + 1):
         scene_obj = {}
-        scene_obj['path'] = line_sp[2 * i - 1]
-        scene_obj['row'] = line_sp[2 * i]
-        line_obj['scenes'].append(scene_obj)
-      
-      parsed_data.append(line_obj)
+        scene_obj['path'] = int(line_sp[2 * i - 1])
+        scene_obj['row'] = int(line_sp[2 * i])
+        parsed_data[id].append(scene_obj)
   
   return parsed_data
 
 def parse_time_periods(filename):
-  parsed_data = []
+  parsed_data = {}
   with open(filename) as csvfile:
     csv_reader = csv.reader(csvfile, delimiter = ',')
     
@@ -43,18 +40,18 @@ def parse_time_periods(filename):
 
     for line in csv_reader:
       
-      line_obj = {}
-      line_obj['id'] = line[region_name_index]
-      line_obj['start_date'] = ''.join(line[start_date_index].split(' '))
-      line_obj['end_date'] = ''.join(line[end_date_index].split(' '))
+      id = line[region_name_index]
+      parsed_data[id] = {}
+      parsed_data[id]['start_date'] = ''.join(line[start_date_index].split(' '))
+      parsed_data[id]['end_date'] = ''.join(line[end_date_index].split(' '))
 
-      parsed_data.append(line_obj)
   return parsed_data      
 
 
 class Downloader():
   def setup(self):
-    subprocess.call('./downloader.sh')
+    subprocess.call(['curl', 'https://landsat-pds.s3.amazonaws.com/c1/L8/scene_list.gz', '--output', 'scene_list.gz'])
+    subprocess.call(['gunzip', 'scene_list.gz'])
 
   def search(self, path, row, start_date = None, end_date = None):
     products = []
@@ -66,7 +63,7 @@ class Downloader():
       path_index = header.index('path')
       row_index = header.index('row')
       product_id_index = header.index('productId')
-      dowload_url_index = header.index('download_url')
+      download_url_index = header.index('download_url')
 
       for product in csv_reader:
         if(int(product[path_index]) == path and int(product[row_index]) == row):
@@ -83,14 +80,34 @@ class Downloader():
             product_obj['product_id'] = product_id
             product_obj['path'] = path
             product_obj['row'] = row
-            product_obj['dowload_url'] = product[dowload_url_index]
+            product_obj['download_url'] = product[download_url_index]
 
             products.append(product_obj)
     return products
 
-  def download(self, path_and_rows_file, time_periods, output_directory):
+  def download_scene(self, scenes, output_directory):
+    for scene in scenes:
+      url_sp = scene['download_url'].split('/')
+      url_sp = url_sp[0:len(url_sp) - 1]
+      for band in ['B4', 'B5', 'BQA']:
+        product_band_id = scene['product_id'] + '_' + band + '.TIF'
+        new_url = '/'.join(url_sp) + '/' + product_band_id
+        print(new_url)
+        subprocess.call(['curl', new_url, '--output', output_directory + product_band_id])
+      # print(url_sp)
+      
 
-    pass
+  def download(self, path_and_rows_file, time_periods, output_directory):
+    ids = path_and_rows_file.keys()
+    subprocess.call(['mkdir', '-p', output_directory])
+    for id in ids:
+      subprocess.call(['mkdir', '-p', output_directory + id])
+    for id in ids:
+      start_date = time_periods[id]['start_date']
+      end_date = time_periods[id]['end_date']
+      for pr_obj in path_and_rows[id]:
+        scenes = self.search(pr_obj['path'], pr_obj['row'], start_date, end_date)
+        self.download_scene(scenes, output_directory + id + '/')
 
 
 if __name__ == '__main__':
@@ -102,7 +119,6 @@ if __name__ == '__main__':
   time_periods = parse_time_periods(sys.argv[2])
   output_directory = sys.argv[3]
   downloader = Downloader()
-  pprint(path_and_rows)
-  pprint(time_periods)
+  downloader.setup()
   downloader.download(path_and_rows, time_periods, output_directory)
   
