@@ -45,8 +45,8 @@ def parse_time_periods(filename):
       
       line_obj = {}
       line_obj['id'] = line[region_name_index]
-      line_obj['start_date'] = line[start_date_index]
-      line_obj['end_date'] = line[end_date_index]
+      line_obj['start_date'] = ''.join(line[start_date_index].split(' '))
+      line_obj['end_date'] = ''.join(line[end_date_index].split(' '))
 
       parsed_data.append(line_obj)
   return parsed_data      
