@@ -206,10 +206,10 @@ def info(path_and_rows_file, time_periods):
         print '\033[94m' + 'cloud cover: ' + ' '.join(map(str, cloud_cover_loc)) + '\033[0m'
         num_scenes += min(len(scenes[path][row]), 3)
         num_places += 1
-    print 'region', 'id='+id, 'nscenes=' + str(num_scenes), 'nplaces=' + str(num_places)
+    print '\033[92m' + 'region', 'id='+id, 'nscenes=' + str(num_scenes), 'nplaces=' + str(num_places) + '\033[0m'
     num_semi += num_scenes
     num_plac += num_places
-  print 'semi-arid', 'nscenes=' + str(num_semi), 'nplaces='+str(num_plac)
+  print '\033[91m' + 'semi-arid', 'nscenes=' + str(num_semi), 'nplaces='+str(num_plac) + '\033[0m'
 
 def download(path_and_rows_file, time_periods, output_directory):
   ids = path_and_rows_file.keys()
