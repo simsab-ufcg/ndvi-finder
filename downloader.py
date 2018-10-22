@@ -1,6 +1,7 @@
 import subprocess
 import csv
 import sys
+import os
 from pprint import pprint
 
 def get_processing_date_from_product_id(product_id):
@@ -74,6 +75,9 @@ class Downloader():
             is_valid = False
           if(end_date and processing_date > end_date):
             is_valid = False
+          # only T1 images
+          if(product_id[-1] != '1'):
+            is_valid = False
           if(is_valid):
 
             product_obj = {}
@@ -81,20 +85,27 @@ class Downloader():
             product_obj['path'] = path
             product_obj['row'] = row
             product_obj['download_url'] = product[download_url_index]
+            product_obj['processed_at'] = processing_date
 
             products.append(product_obj)
     return products
 
   def download_scene(self, scenes, output_directory):
+    subprocesses = []
     for scene in scenes:
       url_sp = scene['download_url'].split('/')
       url_sp = url_sp[0:len(url_sp) - 1]
-      for band in ['B4', 'B5', 'BQA']:
+      bands = ['B4', 'B5', 'BQA']
+      for band in bands:
         product_band_id = scene['product_id'] + '_' + band + '.TIF'
         new_url = '/'.join(url_sp) + '/' + product_band_id
-        print(new_url)
-        subprocess.call(['curl', new_url, '--output', output_directory + product_band_id])
-      # print(url_sp)
+        FNULL = open(os.devnull, 'w')
+        subprocesses.append((subprocess.Popen(' '.join(['curl', new_url, '--output', output_directory + product_band_id]), 
+            shell=True, stdout=FNULL, stderr=FNULL), scene['product_id'] + '_' + band))
+    for (process, product_id) in subprocesses:
+      process.wait()
+      print(product_id + ' downloaded')
+
       
 
   def download(self, path_and_rows_file, time_periods, output_directory):
@@ -111,14 +122,22 @@ class Downloader():
 
 
 if __name__ == '__main__':
-  if(len(sys.argv) != 4):
-    print('Incorrect number of arguments')
-    exit()
+  # if(len(sys.argv) != 4):
+  #   print('Incorrect number of arguments')
+  #   exit()
   print(sys.argv)
-  path_and_rows = parse_path_and_rows(sys.argv[1])
-  time_periods = parse_time_periods(sys.argv[2])
-  output_directory = sys.argv[3]
+  command = sys.argv[1]
   downloader = Downloader()
-  downloader.setup()
-  downloader.download(path_and_rows, time_periods, output_directory)
+  # downloader.setup()
+  if command == 'search':
+    path = int(sys.argv[2])
+    row = int(sys.argv[3])
+    start_date = sys.argv[4]
+    end_date = sys.argv[5]
+    pprint(downloader.search(path, row, start_date, end_date))
+  elif command == 'download':
+    path_and_rows = parse_path_and_rows(sys.argv[2])
+    time_periods = parse_time_periods(sys.argv[3])
+    output_directory = sys.argv[4 ]
+    downloader.download(path_and_rows, time_periods, output_directory)
   
