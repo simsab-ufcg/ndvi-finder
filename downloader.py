@@ -102,19 +102,16 @@ def search(path, row, start_date = None, end_date = None):
 """
   query = {
     path {
-      row {
-        start_date,
-        end_date
-      }
+      Set(row)
     }
   }
 """
-def batch_search(query):
+def batch_search(query, start_date=None, end_date=None):
   result = {}
   paths = query.keys()
   for path in paths:
     result[path] = {}
-    rows = query[path].keys()
+    rows = query[path]
     for row in rows:
       result[path][row] = []
   
@@ -131,9 +128,7 @@ def batch_search(query):
     for product in csv_reader:
       path = int(product[path_index])
       row = int(product[row_index])
-      if query.has_key(path) and query[path].has_key(row):
-        start_date = query[path][row]['start_date']
-        end_date = query[path][row]['end_date']
+      if query.has_key(path) and row in query[path]:
 
         product_id = product[product_id_index]
         download_url = product[download_url_index]
@@ -184,7 +179,7 @@ if __name__ == '__main__':
   #   exit()
   print(sys.argv)
   command = sys.argv[1]
-  # downloader.setup()
+  # setup()
   if command == 'search':
     path = int(sys.argv[2])
     row = int(sys.argv[3])
@@ -192,13 +187,8 @@ if __name__ == '__main__':
     end_date = sys.argv[5]
     pprint(search(path, row, start_date, end_date))
     pprint(batch_search({
-      path: {
-        row: {
-          "start_date": start_date,
-          "end_date": end_date
-        }
-      }
-    }))
+      path: set([row])
+    }, start_date, end_date))
   elif command == 'download':
     path_and_rows = parse_path_and_rows(sys.argv[2])
     time_periods = parse_time_periods(sys.argv[3])
