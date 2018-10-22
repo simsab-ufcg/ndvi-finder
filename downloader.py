@@ -164,6 +164,7 @@ def download_scene(scenes, output_directory):
     scene_directory = output_directory + scene['product_id'] + '/'
     subprocess.call(['mkdir', '-p', scene_directory])
     for band in bands:
+      print 'started download of ' + scene['product_id'] + '_' + band
       product_band_id = scene['product_id'] + '_' + band + '.TIF'
       new_url = '/'.join(url_sp) + '/' + product_band_id
       FNULL = open(os.devnull, 'w')
@@ -171,7 +172,7 @@ def download_scene(scenes, output_directory):
           shell=True, stdout=FNULL, stderr=FNULL), scene['product_id'] + '_' + band))
   for (process, product_id) in subprocesses:
     process.wait()
-    print(product_id + ' downloaded')
+    print product_id + ' downloaded'
 
 def get_scenes(path_and_rows, start_date, end_date):
   path_and_rows_obj = {}
@@ -182,6 +183,7 @@ def get_scenes(path_and_rows, start_date, end_date):
       path_and_rows_obj[pr_obj['path']] = set([pr_obj['row']])
 
   return batch_search(path_and_rows_obj, start_date, end_date)
+
 def info(path_and_rows_file, time_periods):
   ids = path_and_rows_file.keys()
   num_semi = 0
