@@ -8,7 +8,7 @@ def get_processing_date_from_product_id(product_id):
     Ex: LC08_L1TP_149039_20180703_20180717_01_T1
   """
   fields = product_id.split('_')
-  return fields[4]
+  return fields[3]
 
 def parse_path_and_rows(filename):
   parsed_data = {}
@@ -19,7 +19,7 @@ def parse_path_and_rows(filename):
       id = line_sp[0]
       parsed_data[id] = []
       
-      for i in xrange(1, (len(line_sp) - 1)/2 + 1):
+      for i in range(1, (len(line_sp) - 1)/2 + 1):
         scene_obj = {}
         scene_obj['path'] = int(line_sp[2 * i - 1])
         scene_obj['row'] = int(line_sp[2 * i])
