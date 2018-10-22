@@ -11,6 +11,14 @@ def get_processing_date_from_product_id(product_id):
   fields = product_id.split('_')
   return fields[3]
 
+def get_path_from_product_id(product_id):
+  fields = product_id.split('_')
+  return fields[2][0:3]
+
+def get_row_from_product_id(product_id):
+  fields = product_id.split('_')
+  return fields[2][3:6]
+
 def parse_path_and_rows(filename):
   parsed_data = {}
   with open(filename) as open_file:
@@ -64,8 +72,8 @@ def get_product_obj(product_id, start_date, end_date, download_url):
   if(is_valid_product(product_id, start_date, end_date)):
     product_obj = {}
     product_obj['product_id'] = product_id
-    product_obj['path'] = path
-    product_obj['row'] = row
+    product_obj['path'] = get_path_from_product_id(product_id)
+    product_obj['row'] = get_row_from_product_id(product_id)
     product_obj['download_url'] = download_url
     product_obj['processed_at'] = get_processing_date_from_product_id(product_id)
     return product_obj
@@ -148,11 +156,13 @@ def download_scene(scenes, output_directory):
     url_sp = scene['download_url'].split('/')
     url_sp = url_sp[0:len(url_sp) - 1]
     bands = ['B4', 'B5', 'BQA']
+    scene_directory = output_directory + scene['product_id'] + '/'
+    subprocess.call(['mkdir', '-p', scene_directory])
     for band in bands:
       product_band_id = scene['product_id'] + '_' + band + '.TIF'
       new_url = '/'.join(url_sp) + '/' + product_band_id
       FNULL = open(os.devnull, 'w')
-      subprocesses.append((subprocess.Popen(' '.join(['curl', new_url, '--output', output_directory + product_band_id]), 
+      subprocesses.append((subprocess.Popen(' '.join(['curl', new_url, '--output', scene_directory + product_band_id]), 
           shell=True, stdout=FNULL, stderr=FNULL), scene['product_id'] + '_' + band))
   for (process, product_id) in subprocesses:
     process.wait()
@@ -162,13 +172,12 @@ def download_scene(scenes, output_directory):
 
 def download(path_and_rows_file, time_periods, output_directory):
   ids = path_and_rows_file.keys()
-  subprocess.call(['mkdir', '-p', output_directory])
-  for id in ids:
-    subprocess.call(['mkdir', '-p', output_directory + id])
   for id in ids:
     start_date = time_periods[id]['start_date']
     end_date = time_periods[id]['end_date']
     for pr_obj in path_and_rows[id]:
+      path = pr_obj['path']
+      row = pr_obj['row']
       scenes = search(pr_obj['path'], pr_obj['row'], start_date, end_date)
       download_scene(scenes, output_directory + id + '/')
 
@@ -185,7 +194,7 @@ if __name__ == '__main__':
     row = int(sys.argv[3])
     start_date = sys.argv[4]
     end_date = sys.argv[5]
-    pprint(search(path, row, start_date, end_date))
+    # pprint(search(path, row, start_date, end_date))
     pprint(batch_search({
       path: set([row])
     }, start_date, end_date))
