@@ -90,6 +90,67 @@ class Downloader():
             products.append(product_obj)
     return products
 
+  """
+    query = {
+      path {
+        row {
+          start_date,
+          end_date
+        }
+      }
+    }
+  """
+  def batch_search(self, query):
+    result = {}
+    paths = query.keys()
+    for path in paths:
+      result[path] = {}
+      rows = query[path].keys()
+      for row in rows:
+        result[path][row] = []
+    
+    with open('scene_list') as csvfile:
+      csv_reader = csv.reader(csvfile, delimiter = ',')
+      
+      header = csv_reader.next()
+      
+      path_index = header.index('path')
+      row_index = header.index('row')
+      product_id_index = header.index('productId')
+      download_url_index = header.index('download_url')
+
+      for product in csv_reader:
+        path = int(product[path_index])
+        row = int(product[row_index])
+        if query.has_key(path) and query[path].has_key(row):
+          start_date = query[path][row]['start_date']
+          end_date = query[path][row]['end_date']
+
+          is_valid = True
+          product_id = product[product_id_index]
+          processing_date = get_processing_date_from_product_id(product_id)
+          if(start_date and processing_date < start_date):
+            is_valid = False
+          if(end_date and processing_date > end_date):
+            is_valid = False
+          # only T1 images
+          if(product_id[-1] != '1'):
+            is_valid = False
+          if(is_valid):
+
+            product_obj = {}
+            product_obj['product_id'] = product_id
+            product_obj['path'] = path
+            product_obj['row'] = row
+            product_obj['download_url'] = product[download_url_index]
+            product_obj['processed_at'] = processing_date
+
+            result[path][row].append(product_obj)
+    
+    return result
+
+
+
   def download_scene(self, scenes, output_directory):
     subprocesses = []
     for scene in scenes:
@@ -135,6 +196,14 @@ if __name__ == '__main__':
     start_date = sys.argv[4]
     end_date = sys.argv[5]
     pprint(downloader.search(path, row, start_date, end_date))
+    pprint(downloader.batch_search({
+      path: {
+        row: {
+          "start_date": start_date,
+          "end_date": end_date
+        }
+      }
+    }))
   elif command == 'download':
     path_and_rows = parse_path_and_rows(sys.argv[2])
     time_periods = parse_time_periods(sys.argv[3])
