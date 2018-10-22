@@ -68,7 +68,7 @@ def is_valid_product(product_id, start_date, end_date):
     is_valid = False
   return is_valid
 
-def get_product_obj(product_id, start_date, end_date, download_url):
+def build_product_obj(product_id, start_date, end_date, download_url, cloud_cover):
   if(is_valid_product(product_id, start_date, end_date)):
     product_obj = {}
     product_obj['product_id'] = product_id
@@ -76,6 +76,7 @@ def get_product_obj(product_id, start_date, end_date, download_url):
     product_obj['row'] = get_row_from_product_id(product_id)
     product_obj['download_url'] = download_url
     product_obj['processed_at'] = get_processing_date_from_product_id(product_id)
+    product_obj['cloud_cover'] = cloud_cover
     return product_obj
   else:
     return None
@@ -95,12 +96,14 @@ def search(path, row, start_date = None, end_date = None):
     row_index = header.index('row')
     product_id_index = header.index('productId')
     download_url_index = header.index('download_url')
+    cloud_cover_index = header.index('cloudCover')
 
     for product in csv_reader:
       if(int(product[path_index]) == path and int(product[row_index]) == row):
         product_id = product[product_id_index]
         download_url = product[download_url_index]
-        product_obj = get_product_obj(product_id, start_date, end_date, download_url)
+        cloud_cover = float(product[cloud_cover_index])
+        product_obj = build_product_obj(product_id, start_date, end_date, download_url, cloud_cover)
 
         if(product_obj): 
           products.append(product_obj)
@@ -132,6 +135,7 @@ def batch_search(query, start_date=None, end_date=None):
     row_index = header.index('row')
     product_id_index = header.index('productId')
     download_url_index = header.index('download_url')
+    cloud_cover_index = header.index('cloudCover')
 
     for product in csv_reader:
       path = int(product[path_index])
@@ -140,8 +144,9 @@ def batch_search(query, start_date=None, end_date=None):
 
         product_id = product[product_id_index]
         download_url = product[download_url_index]
+        cloud_cover = float(product[cloud_cover_index])
 
-        product_obj = get_product_obj(product_id, start_date, end_date, download_url)
+        product_obj = build_product_obj(product_id, start_date, end_date, download_url, cloud_cover)
 
         if(product_obj):
           result[path][row].append(product_obj)
@@ -193,13 +198,18 @@ def info(path_and_rows_file, time_periods):
     for path in paths:
       rows = scenes[path].keys()
       for row in rows:
-        print('location', path, row, len(scenes[path][row]))
+        print 'posistion', 'path='+str(path), 'row='+str(row), 'nscenes='+str(len(scenes[path][row]))
+        cloud_cover_loc = []
+        for scene in scenes[path][row]:
+          cloud_cover_loc.append(scene['cloud_cover'])
+        cloud_cover_loc.sort()
+        print '\033[94m' + 'cloud cover: ' + ' '.join(map(str, cloud_cover_loc)) + '\033[0m'
         num_scenes += min(len(scenes[path][row]), 3)
         num_places += 1
-    print('region', id, num_scenes, num_places)
+    print 'region', 'id='+id, 'nscenes=' + str(num_scenes), 'nplaces=' + str(num_places)
     num_semi += num_scenes
     num_plac += num_places
-  print('semi-arid', num_semi, num_plac)
+  print 'semi-arid', 'nscenes=' + str(num_semi), 'nplaces='+str(num_plac)
 
 def download(path_and_rows_file, time_periods, output_directory):
   ids = path_and_rows_file.keys()
@@ -226,8 +236,9 @@ if __name__ == '__main__':
   #   exit()
   print(sys.argv)
   command = sys.argv[1]
-  setup()
-  if command == 'search':
+  if command == 'setup':
+    setup()
+  elif command == 'search':
     path = int(sys.argv[2])
     row = int(sys.argv[3])
     start_date = sys.argv[4]
