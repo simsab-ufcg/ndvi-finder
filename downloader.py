@@ -168,19 +168,57 @@ def download_scene(scenes, output_directory):
     process.wait()
     print(product_id + ' downloaded')
 
-    
+def get_scenes(path_and_rows, start_date, end_date):
+  path_and_rows_obj = {}
+  for pr_obj in path_and_rows:
+    if(path_and_rows_obj.has_key(pr_obj['path'])):
+      path_and_rows_obj[pr_obj['path']].add(pr_obj['row'])
+    else:
+      path_and_rows_obj[pr_obj['path']] = set([pr_obj['row']])
+
+  return batch_search(path_and_rows_obj, start_date, end_date)
+def info(path_and_rows_file, time_periods):
+  ids = path_and_rows_file.keys()
+  num_semi = 0
+  num_plac = 0
+  for id in ids:
+    start_date = time_periods[id]['start_date']
+    end_date = time_periods[id]['end_date']
+
+    scenes = get_scenes(path_and_rows[id], start_date, end_date)
+
+    num_scenes = 0
+    num_places = 0
+    paths = scenes.keys()
+    for path in paths:
+      rows = scenes[path].keys()
+      for row in rows:
+        print('location', path, row, len(scenes[path][row]))
+        num_scenes += min(len(scenes[path][row]), 3)
+        num_places += 1
+    print('region', id, num_scenes, num_places)
+    num_semi += num_scenes
+    num_plac += num_places
+  print('semi-arid', num_semi, num_plac)
 
 def download(path_and_rows_file, time_periods, output_directory):
   ids = path_and_rows_file.keys()
   for id in ids:
     start_date = time_periods[id]['start_date']
     end_date = time_periods[id]['end_date']
-    for pr_obj in path_and_rows[id]:
-      path = pr_obj['path']
-      row = pr_obj['row']
-      scenes = search(pr_obj['path'], pr_obj['row'], start_date, end_date)
-      download_scene(scenes, output_directory + id + '/')
 
+    scenes = get_scenes(path_and_rows[id], start_date, end_date)
+
+    num_scenes = 0
+    num_places = 0
+    paths = scenes.keys()
+    for path in paths:
+      rows = scenes[path].keys()
+      for row in rows:
+        num_scenes += min(len(scenes[path][row]), 3)
+        num_places += 1
+        download_scene(scenes[path][row], output_directory + id + '/')
+  
 
 if __name__ == '__main__':
   # if(len(sys.argv) != 4):
@@ -188,7 +226,7 @@ if __name__ == '__main__':
   #   exit()
   print(sys.argv)
   command = sys.argv[1]
-  # setup()
+  setup()
   if command == 'search':
     path = int(sys.argv[2])
     row = int(sys.argv[3])
@@ -203,4 +241,8 @@ if __name__ == '__main__':
     time_periods = parse_time_periods(sys.argv[3])
     output_directory = sys.argv[4 ]
     download(path_and_rows, time_periods, output_directory)
+  elif command == 'info':
+    path_and_rows = parse_path_and_rows(sys.argv[2])
+    time_periods = parse_time_periods(sys.argv[3])
+    info(path_and_rows, time_periods)
   
