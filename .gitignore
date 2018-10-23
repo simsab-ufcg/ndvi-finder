@@ -1,2 +1,4 @@
 scene_list
 output
+run
+*.pyc
