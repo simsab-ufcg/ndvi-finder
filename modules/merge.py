@@ -1,6 +1,6 @@
 import os
 
-def mergePair(path_list):
+def mergePair(path_list, output_name):
 	# path_list format: ["path/tif1", "path/tif2"]
 	# returns path to merged_tif
 
