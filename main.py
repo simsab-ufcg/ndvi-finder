@@ -1,5 +1,5 @@
 import sys
-import downloader
+from modules import downloader
 
 def main():
     
