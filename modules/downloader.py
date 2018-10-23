@@ -63,7 +63,7 @@ def is_valid_product(product_id, start_date, end_date):
     is_valid = False
   if(end_date and processing_date > end_date):
     is_valid = False
-  # only T1 images
+  # # only T1 images
   if(product_id[-1] != '1'):
     is_valid = False
   return is_valid
@@ -160,8 +160,10 @@ def download_scene(scenes, output_directory):
   for scene in scenes:
     url_sp = scene['download_url'].split('/')
     url_sp = url_sp[0:len(url_sp) - 1]
-    bands = ['B4', 'B5', 'BQA']
-    scene_directory = output_directory + scene['product_id'] + '/'
+    bands = ['B4', 'B5', 'BQA', 'MTL']
+    product_id = scene['product_id']
+    pathrow = str(get_path_from_product_id(product_id)) + str(get_row_from_product_id(product_id))
+    scene_directory = output_directory + pathrow + '/' + scene['product_id'] + '/'
     subprocess.call(['mkdir', '-p', scene_directory])
     for band in bands:
       print 'started download of ' + scene['product_id'] + '_' + band
@@ -213,22 +215,18 @@ def info(path_and_rows_file, time_periods):
     num_plac += num_places
   print '\033[91m' + 'semi-arid', 'nscenes=' + str(num_semi), 'nplaces='+str(num_plac) + '\033[0m'
 
-def download(path_and_rows_file, time_periods, output_directory):
-  ids = path_and_rows_file.keys()
+def download(path_and_rows, time_periods, output_directory):
+  ids = path_and_rows.keys()
   for id in ids:
     start_date = time_periods[id]['start_date']
     end_date = time_periods[id]['end_date']
 
     scenes = get_scenes(path_and_rows[id], start_date, end_date)
 
-    num_scenes = 0
-    num_places = 0
     paths = scenes.keys()
     for path in paths:
       rows = scenes[path].keys()
       for row in rows:
-        num_scenes += min(len(scenes[path][row]), 3)
-        num_places += 1
         download_scene(scenes[path][row], output_directory + id + '/')
   
 
@@ -236,7 +234,6 @@ if __name__ == '__main__':
   # if(len(sys.argv) != 4):
   #   print('Incorrect number of arguments')
   #   exit()
-  print(sys.argv)
   command = sys.argv[1]
   if command == 'setup':
     setup()
@@ -245,7 +242,6 @@ if __name__ == '__main__':
     row = int(sys.argv[3])
     start_date = sys.argv[4]
     end_date = sys.argv[5]
-    # pprint(search(path, row, start_date, end_date))
     pprint(batch_search({
       path: set([row])
     }, start_date, end_date))
