@@ -157,6 +157,7 @@ def batch_search(query, start_date=None, end_date=None):
 
 def download_scene(scenes, output_directory):
   subprocesses = []
+  paths = []
   for scene in scenes:
     url_sp = scene['download_url'].split('/')
     url_sp = url_sp[0:len(url_sp) - 1]
@@ -172,9 +173,11 @@ def download_scene(scenes, output_directory):
       FNULL = open(os.devnull, 'w')
       subprocesses.append((subprocess.Popen(' '.join(['curl', new_url, '--output', scene_directory + product_band_id]), 
           shell=True, stdout=FNULL, stderr=FNULL), scene['product_id'] + '_' + band))
+      paths.append(scene_directory + product_band_id)
   for (process, product_id) in subprocesses:
     process.wait()
     print product_id + ' downloaded'
+  return paths
 
 def get_scenes(path_and_rows, start_date, end_date):
   path_and_rows_obj = {}
@@ -215,6 +218,15 @@ def info(path_and_rows_file, time_periods):
     num_plac += num_places
   print '\033[91m' + 'semi-arid', 'nscenes=' + str(num_semi), 'nplaces='+str(num_plac) + '\033[0m'
 
+def get_shape_files(path_and_rows, directory_sample):
+  ids = path_and_rows.keys()
+  shps = {}
+  for id in ids:
+    shp = directory_sample + id + '.shp'
+    shps[id] = shp
+  return shps
+
+
 def download(path_and_rows, time_periods, output_directory):
   ids = path_and_rows.keys()
   for id in ids:
@@ -254,4 +266,5 @@ if __name__ == '__main__':
     path_and_rows = parse_path_and_rows(sys.argv[2])
     time_periods = parse_time_periods(sys.argv[3])
     info(path_and_rows, time_periods)
+
   
