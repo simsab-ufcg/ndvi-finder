@@ -19,16 +19,17 @@ def calculate_ndvi(raster_path, output_path = "ndvi_scenes/"):
 
 	ndvis_path = []
 
-	os.system('mkdir ' + output_path)
+	os.system('mkdir -p ' + output_path)
 
 	for scene in xrange(quant_scenes):
-		path_ndvi_scene = ndvi(raster_path[scene*4 + 0], raster_path[scene*4+1], raster_path[scene*4+2], raster_path[scene*4+3], output_path + 'ndvi_scene_' + str(scene))
+		path_ndvi_scene = ndvi(raster_path[scene*4], raster_path[scene*4+1], raster_path[scene*4+2], raster_path[scene*4+3], output_path + 'ndvi_scene_' + str(scene))
 		ndvis_path.append(path_ndvi_scene)
 
 		UL = coordinate.get_coordinate(raster_path[scene*4])
 		georeference.set_georeference(path_ndvi_scene, raster_path[scene*4], UL)
 
-	for path_scene in raster_path:
-		os.system('rm -r ' + path_scene)
+	# Delete files in raster_path
+	#for path_scene in raster_path:
+	#	os.system('rm -r ' + path_scene)
 
 	return ndvis_path
