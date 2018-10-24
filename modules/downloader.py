@@ -206,12 +206,19 @@ def info(path_and_rows_file, time_periods):
       rows = scenes[path].keys()
       for row in rows:
         print 'posistion', 'path='+str(path), 'row='+str(row), 'nscenes='+str(len(scenes[path][row]))
-        cloud_cover_loc = []
+        real_scenes_obj = {}
         for scene in scenes[path][row]:
+          real_scenes_obj[scene['download_url']] = scene
+        real_scenes = real_scenes_obj.values()
+        cloud_cover_loc = []
+        for scene in real_scenes:
           cloud_cover_loc.append(scene['cloud_cover'])
         cloud_cover_loc.sort()
+        print '\033[94m' + 'product ids: ' + str(len(real_scenes)) + '\033[0m'
+        # for scene in real_scenes:
+        #   pprint(scene)
         print '\033[94m' + 'cloud cover: ' + ' '.join(map(str, cloud_cover_loc)) + '\033[0m'
-        num_scenes += min(len(scenes[path][row]), 3)
+        num_scenes += min(len(real_scenes), 100)
         num_places += 1
     print '\033[92m' + 'region', 'id='+id, 'nscenes=' + str(num_scenes), 'nplaces=' + str(num_places) + '\033[0m'
     num_semi += num_scenes
