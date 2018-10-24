@@ -22,15 +22,13 @@ def mergePair(path_list, output_name):
 	command = separator.join( (command, tiff2, str(tiff2_coord[X_INDEX]), str(tiff2_coord[Y_INDEX])) )
 	command = separator.join( (command, output_name + '.tif') )
 
-	#print command
-	#os.system(command)
-
+	os.system(command)
 	output_path = output_name + '.tif'
 
-	if tiff1_coord[Y_INDEX] > tiff2_coord[Y_INDEX]:
-		output_coord = tiff1_coord
-	else:
-		output_coord = tiff2_coord
+	maxY = max(tiff1_coord[Y_INDEX], tiff2_coord[Y_INDEX])
+	minX = min(tiff1_coord[X_INDEX], tiff2_coord[X_INDEX])
+
+	output_coord = (minX, maxY)
 
 	georeference.set_georeference(output_path, tiff1, output_coord)
 	return output_path
@@ -45,5 +43,5 @@ def merge(path_list, output_name="output"):
 	return output_path
 
 
-#path_list = ["inputTeste/maceio/ndviMaceio.tif", "inputTeste/natal/ndviNatal.tif"]
+#path_list = ['ndvi_scenes/ndvi_scene_0.tif', 'ndvi_scenes/ndvi_scene_1.tif']
 #merge(path_list)

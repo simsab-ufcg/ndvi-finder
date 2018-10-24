@@ -75,7 +75,7 @@ int main(int argc, char *argv[]){
         cerr << "Arguments insufficients\n";
         exit(0);
     }
-
+    
     // process input
     logger("process input");
 
@@ -93,7 +93,7 @@ int main(int argc, char *argv[]){
 
         TIFFGetField(bases[i], TIFFTAG_IMAGEWIDTH     , &width); 
         TIFFGetField(bases[i], TIFFTAG_IMAGELENGTH    , &length);
-        
+
         squares[i] = getShape(x1, y1, x1 + width * pixelWidth, y1 - (length * pixelHeight));
     }
 
