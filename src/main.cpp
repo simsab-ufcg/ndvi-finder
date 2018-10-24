@@ -2,7 +2,6 @@
 #include <time.h>
 #include <unistd.h>
 #include <string.h>
-#include "read_meta.h"
 #include "utils.h"
 #include "merge.h"
 
@@ -43,6 +42,11 @@ void setup(Square square, Tiff output){
     }
 }
 
+Square getShape(ldouble x1, ldouble y1, ldouble x2, ldouble y2){
+    Square square = {{x1, y1}, {x2, y2}};
+    return square;
+}
+
 Square joinSquares(Square a, Square b){
     ldouble x_UL = min(a.UL.x, b.UL.x);
     ldouble y_UL = max(a.UL.y, b.UL.y);
@@ -58,17 +62,16 @@ int main(int argc, char *argv[]){
 
     // constants
 
-    const int INPUT_BASE_INDEX[2] = {1, 3};
-    const int INPUT_MTL_INDEX[2] = {2, 4};
+    const int INPUT_BASE_INDEX[2] = {1, 4};
+    const int INPUT_COORD_VALUES[2][2] = {{2, 3}, {5, 6}};
 
-    const int OUTPUT_BASE_INDEX = 5;
-    const int OUTPUT_MTL_INDEX = 6;
+    const int OUTPUT_BASE_INDEX = 7;
 
     const string AUX_TIF = "aux.tif";
 
     // valid arguments
     
-    if(argc < 7 || argc > 7){
+    if(argc != 8){
         cerr << "Arguments insufficients\n";
         exit(0);
     }
@@ -76,16 +79,22 @@ int main(int argc, char *argv[]){
     // process input
     logger("process input");
 
-    ReadMeta reader_mtl[2], output_mtl;
     Tiff bases[2], output_base, output_read;
     Square squares[2], output_square;
 
     for(int i = 0; i < 2; i++){
-        string path_meta_file = argv[INPUT_MTL_INDEX[i]];
-        reader_mtl[i] = ReadMeta(path_meta_file);
-        squares[i] = reader_mtl[i].getShape();
+
+        ldouble x1 = atof(argv[INPUT_COORD_VALUES[i][0]]);
+        ldouble y1 = atof(argv[INPUT_COORD_VALUES[i][1]]);
+        
         string path_tiff_base = argv[INPUT_BASE_INDEX[i]];
         bases[i] = TIFFOpen(path_tiff_base.c_str(), "rm");
+        int width, length;
+
+        TIFFGetField(bases[i], TIFFTAG_IMAGEWIDTH     , &width); 
+        TIFFGetField(bases[i], TIFFTAG_IMAGELENGTH    , &length);
+        
+        squares[i] = getShape(x1, y1, x1 + width * pixelWidth, y1 - (length * pixelHeight));
     }
 
     // create output file
