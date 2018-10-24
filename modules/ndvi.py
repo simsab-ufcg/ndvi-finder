@@ -26,8 +26,6 @@ def calculate_ndvi(raster_path, output_path = "ndvi_scenes/"):
 		ndvis_path.append(path_ndvi_scene)
 
 		UL = coordinate.get_coordinate(raster_path[scene*4])
-		print path_ndvi_scene, raster_path[scene*4]
-		print UL
 		georeference.set_georeference(path_ndvi_scene, raster_path[scene*4], UL)
 
 	# Delete files in raster_path
