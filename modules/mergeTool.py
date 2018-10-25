@@ -4,8 +4,8 @@ import georeference
 
 def mergePair(path_list, output_name):
 	'''
-	This function takes the paths of two distinct ndvi_tif
-	files, merge them and returns the path of merged tif
+	Takes paths of two distinct ndvi_tiff files, 
+	merge those files and returns the path of merged tiff
 	'''
 
 	X_INDEX = 0
@@ -34,14 +34,25 @@ def mergePair(path_list, output_name):
 	return output_path
 
 def merge(path_list, output_name="output"):
-	resulting_tif_path = path_list[0]
+	'''
+	Takes paths of N distinct ndvi_tiff files, merge all
+	of them in a single big tiff and returns the path to this tiff
+	'''
+
+	alt = 1
+	resulting_tiff_path = path_list[0]
 
 	for i in xrange(1, len(path_list)):
-		resulting_tif_path = mergePair( [resulting_tif_path, path_list[i]], output_name )
+		alt ^= 1
+		os.system("rm -f " + output_name + str(alt))
+		resulting_tiff_path = mergePair( [resulting_tiff_path, path_list[i]], output_name + str(alt) )
+
+	# remember to remove aux.tif
+	# os.system("rm aux.tif")
 
 	output_path = output_name + '.tif'
 	return output_path
 
 
-#path_list = ['ndvi_scenes/ndvi_scene_0.tif', 'ndvi_scenes/ndvi_scene_1.tif']
+#path_list = ['ndvi_scenes/ndvi_scene_0.tif', 'ndvi_scenes/ndvi_scene_1.tif', 'ndvi_scenes/ndvi_scene_2.tif']
 #merge(path_list)
