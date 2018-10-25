@@ -15,7 +15,7 @@ def set_georeference(src_path, base_path, coord_upper_left):
 		else:
 			result_coord.append(base_coord[i])
 
-	src_ds.SetGeoTransform(base_coord)
+	src_ds.SetGeoTransform(result_coord)
 	src_ds.SetProjection(base_proj)
 
 	src_ds = None
