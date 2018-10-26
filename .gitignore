@@ -3,3 +3,5 @@ output
 run
 *.pyc
 *.tif
+log*
+index.csv
