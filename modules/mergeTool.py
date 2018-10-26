@@ -47,7 +47,7 @@ def merge(path_list, output_name="output"):
 		os.system("rm -f " + output_name + str(alt))
 		resulting_tiff_path = mergePair( [resulting_tiff_path, path_list[i]], output_name + str(alt) )
 
-	os.system("rm -f " + output_name + str(alt^1))
+	os.system("rm -f " + output_name + str(alt^1) + '.tif')
 	os.system("rm -f aux.tif")
 
 	return resulting_tiff_path
