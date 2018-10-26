@@ -1,5 +1,6 @@
 #pragma once
 #include "mergeMeanFunction.h"
+#include <unistd.h>
 
 struct MergeTiff{
     Tiff input_base[2];

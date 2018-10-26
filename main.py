@@ -9,7 +9,7 @@ def main(regions, time_ranges, shape_files):
             scenes_raster = downloader.search(scene['path'], scene['row'], time_ranges[region]['start_date'], time_ranges[region]['end_date'])
             raster_paths = downloader.download_scene(scenes_raster, 'semi-arid/' + region + '/')
             ndvi_results += ndvi_calculate(raster_paths) ## TODO return ndvi_paths and remove unecessary files
-        sub_regions_raster += crop ( merge( ndvi_results ), shape_files[region] ) ## TODO return merged path and remove unecessary files
+        sub_regions_raster += crop ( merge( ndvi_results ), shape_files[region] , region) ## TODO return merged path and remove unecessary files
     merge( sub_regions_raster ) ## TODO return merged path and remove unecessary files
 
 if __name__ == '__main__':
