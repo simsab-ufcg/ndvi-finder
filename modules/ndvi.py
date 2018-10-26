@@ -33,24 +33,3 @@ def calculate_ndvi(raster_path, output_path = "ndvi_scenes/"):
 	#	os.system('rm -r ' + path_scene)
 
 	return ndvis_path
-
-'''
-raster_path = [
-"inputTeste/campinagrande/LC08_L1TP_214065_20181014_20181014_01_RT_B4.TIF",
-"inputTeste/campinagrande/LC08_L1TP_214065_20181014_20181014_01_RT_B5.TIF",
-"inputTeste/campinagrande/LC08_L1TP_214065_20181014_20181014_01_RT_BQA.TIF",
-"inputTeste/campinagrande/LC08_L1TP_214065_20181014_20181014_01_RT_MTL.txt",
-
-"inputTeste/maceio/LC08_L1TP_214067_20181014_20181014_01_RT_B4.TIF",
-"inputTeste/maceio/LC08_L1TP_214067_20181014_20181014_01_RT_B5.TIF",
-"inputTeste/maceio/LC08_L1TP_214067_20181014_20181014_01_RT_BQA.TIF",
-"inputTeste/maceio/LC08_L1TP_214067_20181014_20181014_01_RT_MTL.txt",
-
-"inputTeste/natal/LC08_L1TP_214064_20181014_20181014_01_RT_B4.TIF",
-"inputTeste/natal/LC08_L1TP_214064_20181014_20181014_01_RT_B5.TIF",
-"inputTeste/natal/LC08_L1TP_214064_20181014_20181014_01_RT_BQA.TIF",
-"inputTeste/natal/LC08_L1TP_214064_20181014_20181014_01_RT_MTL.txt"
-]
-
-calculate_ndvi(raster_path)
-'''

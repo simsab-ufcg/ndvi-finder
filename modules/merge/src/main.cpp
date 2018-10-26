@@ -25,7 +25,7 @@ void setup(Square square, Tiff output){
     TIFFSetField(output, TIFFTAG_COMPRESSION    , 1);
     TIFFSetField(output, TIFFTAG_PHOTOMETRIC    , 1);
     TIFFSetField(output, TIFFTAG_SAMPLESPERPIXEL, 1);
-    TIFFSetField(output, TIFFTAG_ROWSPERSTRIP   , 8);
+    TIFFSetField(output, TIFFTAG_ROWSPERSTRIP   , 1);
     TIFFSetField(output, TIFFTAG_RESOLUTIONUNIT , 1);
     TIFFSetField(output, TIFFTAG_XRESOLUTION    , 1);
     TIFFSetField(output, TIFFTAG_YRESOLUTION    , 1);

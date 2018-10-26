@@ -18,12 +18,11 @@ void MergeTiff::merge(){
 
         Tiff output_read, output_base;
 
+        cout << "";
         if((i%2) == 0){
-            cout << endl;
             output_read = TIFFOpen(output_base_name.c_str(), "rm");
             output_base = TIFFOpen(output_read_name.c_str(), "w8m");
         }else{
-            cout << endl;
             output_read = TIFFOpen(output_read_name.c_str(), "rm");
             output_base = TIFFOpen(output_base_name.c_str(), "w8m");
             
@@ -40,7 +39,7 @@ void MergeTiff::merge(){
         TIFFSetField(output_base, TIFFTAG_COMPRESSION    , 1);
         TIFFSetField(output_base, TIFFTAG_PHOTOMETRIC    , 1);
         TIFFSetField(output_base, TIFFTAG_SAMPLESPERPIXEL, 1);
-        TIFFSetField(output_base, TIFFTAG_ROWSPERSTRIP   , 8);
+        TIFFSetField(output_base, TIFFTAG_ROWSPERSTRIP   , 1);
         TIFFSetField(output_base, TIFFTAG_RESOLUTIONUNIT , 1);
         TIFFSetField(output_base, TIFFTAG_XRESOLUTION    , 1);
         TIFFSetField(output_base, TIFFTAG_YRESOLUTION    , 1);
