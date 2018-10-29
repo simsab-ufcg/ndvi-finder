@@ -5,3 +5,4 @@ run
 *.tif
 log*
 index.csv
+LOG*

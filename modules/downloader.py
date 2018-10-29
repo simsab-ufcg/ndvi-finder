@@ -62,7 +62,7 @@ def is_valid_product(scene_id, start_date, end_date):
     is_valid = False
   if(end_date and processed_at > end_date):
     is_valid = False
-  if(scene_id[2] != '8'  and scene_id[2] != '5' and scene_id[2] != '4'):
+  if(scene_id[2] != '8' and scene_id[2] != '7' and scene_id[2] != '5' and scene_id[2] != '4'):
     is_valid = False
   # # only T1 images
   # if(scene_id[-1] != '1'):
@@ -82,8 +82,9 @@ def build_product_obj(scene_id, start_date, end_date, download_url, cloud_cover)
   else:
     return None
 
+DIR = os.path.dirname(os.path.abspath(__file__))
 def setup(ulx = 214, uly = 61, brx = 223, bry = 74):
-  subprocess.call(['sh', 'b.sh', str(ulx), str(uly), str(brx), str(bry)])
+  subprocess.call(['sh', DIR + '/downloader/downloader.sh', str(ulx), str(uly), str(brx), str(bry)])
 
 def search(path, row, start_date = None, end_date = None):
   products = []
@@ -201,8 +202,7 @@ def get_scenes(path_and_rows, start_date, end_date):
 
 def info(path_and_rows_file, time_periods):
   ids = path_and_rows_file.keys()
-  num_semi = 0
-  num_plac = 0
+  num_zeros = 0
   for id in ids:
     start_date = time_periods[id]['start_date']
     end_date = time_periods[id]['end_date']
@@ -210,16 +210,13 @@ def info(path_and_rows_file, time_periods):
     scenes = get_scenes(path_and_rows[id], start_date, end_date)
 
     print 'region=' + id
-    num_scenes = 0
-    num_places = 0
     paths = scenes.keys()
     for path in paths:
       rows = scenes[path].keys()
       for row in rows:
-        # real_scenes_obj = {}
-        # for scene in scenes[path][row]:
-        #   real_scenes_obj[get_processed_at_from_scene_id(scene['scene_id'])] = scene
         print 'path='+str(path), 'row='+str(row), 'nscenes='+str(len(scenes[path][row]))
+        if(len(scenes[path][row]) == 0):
+          num_zeros += 1
         cloud_cover_loc = []
         for scene in scenes[path][row]:
           cloud_cover_loc.append(scene['cloud_cover'])
@@ -227,12 +224,7 @@ def info(path_and_rows_file, time_periods):
         for scene in scenes[path][row]:
           print 'SCENE_ID=' + scene['scene_id'], 'CLOUD_COVER=' + str(scene['cloud_cover'])
         print
-        num_scenes += min(len(scenes[path][row]), 100)
-        num_places += 1
-    # print '\033[92m' + 'region', 'id='+id, 'nscenes=' + str(num_scenes), 'nplaces=' + str(num_places) + '\033[0m'
-    num_semi += num_scenes
-    num_plac += num_places
-  # print '\033[91m' + 'semi-arid', 'nscenes=' + str(num_semi), 'nplaces='+str(num_plac) + '\033[0m'
+  print 'nzeros=' + str(num_zeros)
 
 def get_shape_files(path_and_rows, directory_sample):
   ids = path_and_rows.keys()
@@ -283,7 +275,7 @@ if __name__ == '__main__':
   elif command == 'download':
     path_and_rows = parse_path_and_rows(sys.argv[2])
     time_periods = parse_time_periods(sys.argv[3])
-    output_directory = sys.argv[4 ]
+    output_directory = sys.argv[4]
     download(path_and_rows, time_periods, output_directory)
   elif command == 'info':
     path_and_rows = parse_path_and_rows(sys.argv[2])
