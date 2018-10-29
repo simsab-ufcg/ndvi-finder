@@ -18,7 +18,7 @@ def mergePair(path_list, output_name):
 	tiff2_coord = coordinate.get_coordinate(tiff2)
 
 	separator = " "
-	command = separator.join( ("./run", tiff1, str(tiff1_coord[X_INDEX]), str(tiff1_coord[Y_INDEX])) )
+	command = separator.join( ("./modules/merge/run", tiff1, str(tiff1_coord[X_INDEX]), str(tiff1_coord[Y_INDEX])) )
 	command = separator.join( (command, tiff2, str(tiff2_coord[X_INDEX]), str(tiff2_coord[Y_INDEX])) )
 	command = separator.join( (command, output_name + '.tif') )
 

@@ -24,7 +24,9 @@ ldouble ReadMeta::getSunElevation(){
 
 int ReadMeta::getNumberSensor(){
     string resultSearch = search("LANDSAT_SCENE_ID");
-    return atoi(new char(resultSearch[3]));
+    char number[1];
+    strncpy(number, &resultSearch[3], 1);
+    return atoi(number);
 }
 
 int ReadMeta::getJulianDay(){
