@@ -30,3 +30,5 @@ cut -d, -f1,10,11,12,18 index.csv | sed 's/gs:\/\//http:\/\/storage.googleapis.c
         print "SCENE_ID,PATH,ROW,CLOUD_COVER,DOWNLOAD_URL"
     }
 }' > scene_list
+
+rm index.csv

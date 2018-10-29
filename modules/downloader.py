@@ -83,8 +83,7 @@ def build_product_obj(scene_id, start_date, end_date, download_url, cloud_cover)
     return None
 
 def setup():
-  subprocess.call(['curl', 'https://landsat-pds.s3.amazonaws.com/c1/L8/scene_list.gz', '--output', 'scene_list.gz'])
-  subprocess.call(['gunzip', 'scene_list.gz'])
+  subprocess.call(['sh', 'b.sh'])
 
 def search(path, row, start_date = None, end_date = None):
   products = []
