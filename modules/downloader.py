@@ -6,7 +6,7 @@ import sys
 import os
 from pprint import pprint
 
-def get_processing_date_from_scene_id(scene_id):
+def get_processed_at_from_scene_id(scene_id):
   """
     Ex: LC8 214 063 2013241 LGN02
   """
@@ -57,12 +57,12 @@ def parse_time_periods(filename):
 
 def is_valid_product(scene_id, start_date, end_date):
   is_valid = True
-  processing_date = get_processing_date_from_scene_id(scene_id)
-  if(start_date and processing_date < start_date):
+  processed_at = get_processed_at_from_scene_id(scene_id)
+  if(start_date and processed_at < start_date):
     is_valid = False
-  if(end_date and processing_date > end_date):
+  if(end_date and processed_at > end_date):
     is_valid = False
-  if(scene_id[2] != '8' and scene_id[2] != '7' and scene_id[2] != '5' and scene_id[2] != '4'):
+  if(scene_id[2] != '8'  and scene_id[2] != '5' and scene_id[2] != '4'):
     is_valid = False
   # # only T1 images
   # if(scene_id[-1] != '1'):
@@ -76,14 +76,14 @@ def build_product_obj(scene_id, start_date, end_date, download_url, cloud_cover)
     product_obj['path'] = get_path_from_scene_id(scene_id)
     product_obj['row'] = get_row_from_scene_id(scene_id)
     product_obj['download_url'] = download_url
-    product_obj['processed_at'] = get_processing_date_from_scene_id(scene_id)
+    product_obj['processed_at'] = get_processed_at_from_scene_id(scene_id)
     product_obj['cloud_cover'] = cloud_cover
     return product_obj
   else:
     return None
 
-def setup():
-  subprocess.call(['sh', 'b.sh'])
+def setup(ulx = 214, uly = 61, brx = 223, bry = 74):
+  subprocess.call(['sh', 'b.sh', str(ulx), str(uly), str(brx), str(bry)])
 
 def search(path, row, start_date = None, end_date = None):
   products = []
@@ -124,7 +124,7 @@ def batch_search(query, start_date=None, end_date=None):
     result[path] = {}
     rows = query[path]
     for row in rows:
-      result[path][row] = []
+      result[path][row] = {}
   
   with open('scene_list') as csvfile:
     csv_reader = csv.reader(csvfile, delimiter = ',')
@@ -148,8 +148,19 @@ def batch_search(query, start_date=None, end_date=None):
         product_obj = build_product_obj(scene_id, start_date, end_date, download_url, cloud_cover)
 
         if(product_obj):
-          result[path][row].append(product_obj)
+          processed_at = get_processed_at_from_scene_id(scene_id)
+          if(result[path][row].has_key(processed_at)):
+            product_old = result[path][row][processed_at]
+            if(product_obj['cloud_cover'] < product_old['cloud_cover']):
+              result[path][row][processed_at] = product_obj
+          else:
+            result[path][row][processed_at] = product_obj
   
+  for path in paths:
+    rows = query[path]
+    for row in rows:
+      result[path][row] = result[path][row].values()
+
   return result
 
 
@@ -205,21 +216,18 @@ def info(path_and_rows_file, time_periods):
     for path in paths:
       rows = scenes[path].keys()
       for row in rows:
-        real_scenes_obj = {}
-        for scene in scenes[path][row]:
-          real_scenes_obj[get_processing_date_from_scene_id(scene['scene_id'])] = scene
-        real_scenes = real_scenes_obj.values()
-        print 'path='+str(path), 'row='+str(row), 'nscenes='+str(len(real_scenes))
+        # real_scenes_obj = {}
+        # for scene in scenes[path][row]:
+        #   real_scenes_obj[get_processed_at_from_scene_id(scene['scene_id'])] = scene
+        print 'path='+str(path), 'row='+str(row), 'nscenes='+str(len(scenes[path][row]))
         cloud_cover_loc = []
-        for scene in real_scenes:
+        for scene in scenes[path][row]:
           cloud_cover_loc.append(scene['cloud_cover'])
         cloud_cover_loc.sort()
-        # print '\033[94m' + 'product ids: ' + str(len(real_scenes)) + '\033[0m'
-        for scene in real_scenes:
+        for scene in scenes[path][row]:
           print 'SCENE_ID=' + scene['scene_id'], 'CLOUD_COVER=' + str(scene['cloud_cover'])
         print
-        # print '\033[94m' + 'cloud cover: ' + ' '.join(map(str, cloud_cover_loc)) + '\033[0m'
-        num_scenes += min(len(real_scenes), 100)
+        num_scenes += min(len(scenes[path][row]), 100)
         num_places += 1
     # print '\033[92m' + 'region', 'id='+id, 'nscenes=' + str(num_scenes), 'nplaces=' + str(num_places) + '\033[0m'
     num_semi += num_scenes
@@ -256,7 +264,14 @@ if __name__ == '__main__':
   #   exit()
   command = sys.argv[1]
   if command == 'setup':
-    setup()
+    if(len(sys.argv) == 6):
+      ulx = int(sys.argv[2])
+      uly = int(sys.argv[3])
+      brx = int(sys.argv[4])
+      bry = int(sys.argv[5])
+      setup(ulx, uly, brx, bry)
+    else:
+      setup()
   elif command == 'search':
     path = int(sys.argv[2])
     row = int(sys.argv[3])
