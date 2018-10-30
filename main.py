@@ -1,5 +1,6 @@
 import sys
 from modules import downloader
+from modules import mergeTool, crop, ndvi
 
 def main(regions, time_ranges, shape_files):
     sub_regions_raster = []
@@ -8,9 +9,9 @@ def main(regions, time_ranges, shape_files):
         for scene in regions[region]:
             scenes_raster = downloader.search(scene['path'], scene['row'], time_ranges[region]['start_date'], time_ranges[region]['end_date'])
             raster_paths = downloader.download_scene(scenes_raster, 'semi-arid/' + region + '/')
-            ndvi_results += ndvi_calculate(raster_paths) ## TODO return ndvi_paths and remove unecessary files
-        sub_regions_raster += crop ( merge( ndvi_results ), shape_files[region] , region) ## TODO return merged path and remove unecessary files
-    merge( sub_regions_raster ) ## TODO return merged path and remove unecessary files
+            ndvi_results += ndvi.calculate_ndvi(raster_paths)
+        sub_regions_raster += crop.crop ( mergeTool.merge( ndvi_results ), shape_files[region] , region)
+    mergeTool.merge( sub_regions_raster )
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
