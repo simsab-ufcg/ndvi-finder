@@ -3,6 +3,7 @@
 #include "pixelReader.h"
 
 using namespace std;
+vector<double> loadedData;
 
 void setup(TIFF* output, TIFF* base){
     uint32 imageWidth, imageLength;
@@ -52,23 +53,18 @@ int main(int argc, char* argv[]){
     cout << "tileLength: " << tileLength << " / tileWidth: " << tileWidth << endl;
     cout << "tiffTileSize: " << TIFFTileSize(tif) << endl;
 
-    cout << "yo" << endl;
     tdata_t buf;
     unsigned short byte_size = TIFFTileSize(tif) / (tileWidth * tileLength);
     buf = _TIFFmalloc(TIFFTileSize(tif));
-    cout << "yo2" << endl;
 
     int tileCounter;
-
-    cout << "tileLength: " << tileLength << " / width: " << width << endl;
-    double loadedData[tileLength][width];
-
-    cout << "yo3" << endl;
+    double dataLine[width];
     PixelReader pixelReader = PixelReader(sample_band, byte_size, buf);
-    cout << "yo4" << endl;
 
     for(int i = 0; i < height; i += tileLength) {
         tileCounter = 0;
+        loadedData.clear();
+
         for(int j = 0; j < width; j += tileWidth) {
             TIFFReadTile(tif, buf, j, i, 0, 0);
             
@@ -76,18 +72,27 @@ int main(int argc, char* argv[]){
             for(int line = 0; line < tileLength; line++) {
                 for(int column = 0; column < tileWidth; column++) {
                     double value = pixelReader.readPixel(actualPosition);
-                    loadedData[line][column + (tileCounter * tileWidth)] = value;
-
+                    loadedData.push_back(value);
                     actualPosition++;
-                    cout << "actualPosition: " << actualPosition << endl;
                 }
             }
 
             tileCounter++;
         }
 
+        int noElements = ((int) loadedData.size());
         for(int line = 0; line < tileLength; line++) {
-            TIFFWriteScanline(outputTiff, loadedData[line], line + i);
+            int pos = 0;
+            for(int k = 0; k < width; k += tileWidth) {
+                for(int column = 0; column < tileWidth; column++) {
+                    if(pos >= width) continue;
+
+                    dataLine[pos] = loadedData[ (line*tileLength) + (k*tileWidth) + column ];
+                    pos++;
+                }
+            }
+
+            TIFFWriteScanline(outputTiff, dataLine, line + i);
         }
     }
 
