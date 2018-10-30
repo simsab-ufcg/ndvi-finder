@@ -95,18 +95,29 @@ int main(int argc, char *argv[]){
     //load band 4 (tiff)
     string path_tiff_band_4 = argv[INPUT_BAND_4_INDEX];
     Tiff band_4 = TIFFOpen(path_tiff_band_4.c_str(), "rm");
-
+    if(!band_4){
+        return 1;
+    }
     //load band 5 (tiff)
     string path_tiff_band_5 = argv[INPUT_BAND_5_INDEX];
     Tiff band_5 = TIFFOpen(path_tiff_band_5.c_str(), "rm");
+    if(!band_5){
+        return 1;
+    }
 
     //load band_bqa (tiff)
     string path_tiff_band_bqa = argv[INPUT_BAND_BQA_INDEX];
     Tiff band_bqa = TIFFOpen(path_tiff_band_bqa.c_str(), "rm");
+    if(!band_bqa){
+        return 1;
+    }
 
     //load tiff ndvi
     string path_output_tiff_ndvi = argv[OUTPUT_NAME_INDEX];
     Tiff ndvi = TIFFOpen(path_output_tiff_ndvi.c_str(), "w8m");
+    if(!ndvi){
+        return 1;
+    }
     setup(ndvi, band_4);
 
     logger("Preprocess");
