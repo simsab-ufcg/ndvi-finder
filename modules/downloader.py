@@ -33,6 +33,17 @@ def parse_path_and_rows(filename):
         scene_obj['row'] = int(line_sp[2 * i])
         parsed_data[id].append(scene_obj)
   
+  # obj = {}
+  # nn = 0
+  # for parse in parsed_data.values():
+  #   for nobj in parse:
+  #     if(not obj.has_key(nobj['path'])):
+  #       obj[nobj['path']] = {}
+  #     if(not obj[nobj['path']].has_key(nobj['row'])):
+  #       obj[nobj['path']][nobj['row']] = True
+  #       nn += 1
+  
+  # print nn
   return parsed_data
 
 def parse_time_periods(filename):
@@ -202,29 +213,25 @@ def get_scenes(path_and_rows, start_date, end_date):
 
 def info(path_and_rows_file, time_periods):
   ids = path_and_rows_file.keys()
-  num_zeros = 0
+  print 'region,path,row,scene_id,cloud_cover,download_url'
   for id in ids:
     start_date = time_periods[id]['start_date']
     end_date = time_periods[id]['end_date']
 
     scenes = get_scenes(path_and_rows[id], start_date, end_date)
 
-    print 'region=' + id
     paths = scenes.keys()
     for path in paths:
       rows = scenes[path].keys()
       for row in rows:
-        print 'path='+str(path), 'row='+str(row), 'nscenes='+str(len(scenes[path][row]))
-        if(len(scenes[path][row]) == 0):
-          num_zeros += 1
         cloud_cover_loc = []
         for scene in scenes[path][row]:
           cloud_cover_loc.append(scene['cloud_cover'])
         cloud_cover_loc.sort()
         for scene in scenes[path][row]:
-          print 'SCENE_ID=' + scene['scene_id'], 'CLOUD_COVER=' + str(scene['cloud_cover'])
-        print
-  print 'nzeros=' + str(num_zeros)
+          print ','.join([id, str(path), str(row), scene['scene_id'], str(scene['cloud_cover']), scene['download_url']])
+        if len(scenes[path][row]) == 0:
+          print ','.join([id, str(path), str(row), 'NOT FOUND', 'NOT FOUND', 'NOT FOUND'])
 
 def get_shape_files(path_and_rows, directory_sample):
   ids = path_and_rows.keys()
