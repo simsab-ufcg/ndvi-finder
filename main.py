@@ -1,6 +1,5 @@
 import sys
-from modules import downloader
-from modules import mergeTool, crop, ndvi
+from modules import mergeTool, crop, ndvi, downloader
 
 def main(regions, time_ranges, shape_files):
     sub_regions_raster = []
