@@ -20,38 +20,47 @@ def get_row_from_scene_id(scene_id):
 
 def parse_path_and_rows(filename):
   parsed_data = {}
-  with open(filename) as open_file:
-    for line in open_file:
+  try:
+    with open(filename) as open_file:
+      for line in open_file:
 
-      line_sp = line.split(' ')
-      id = line_sp[0]
-      parsed_data[id] = []
-      
-      for i in range(1, (len(line_sp) - 1)/2 + 1):
-        scene_obj = {}
-        scene_obj['path'] = int(line_sp[2 * i - 1])
-        scene_obj['row'] = int(line_sp[2 * i])
-        parsed_data[id].append(scene_obj)
+        line_sp = line.split(' ')
+        id = line_sp[0]
+        parsed_data[id] = []
+        
+        for i in range(1, (len(line_sp) - 1)/2 + 1):
+          scene_obj = {}
+          scene_obj['path'] = int(line_sp[2 * i - 1])
+          scene_obj['row'] = int(line_sp[2 * i])
+          parsed_data[id].append(scene_obj)
+  except IOError:
+    print "Path_and_rows file not found. Make sure you are using correct path."
+    raise SystemExit
+
   
   return parsed_data
 
 def parse_time_periods(filename):
   parsed_data = {}
-  with open(filename) as csvfile:
-    csv_reader = csv.reader(csvfile, delimiter = ',')
-    
-    header = csv_reader.next()
-
-    region_name_index = header.index('REGION_NAME')
-    start_date_index = header.index('START_DATE')
-    end_date_index = header.index('END_DATE')
-
-    for line in csv_reader:
+  try:
+    with open(filename) as csvfile:
+      csv_reader = csv.reader(csvfile, delimiter = ',')
       
-      id = line[region_name_index]
-      parsed_data[id] = {}
-      parsed_data[id]['start_date'] = ''.join(line[start_date_index].split(' '))
-      parsed_data[id]['end_date'] = ''.join(line[end_date_index].split(' '))
+      header = csv_reader.next()
+
+      region_name_index = header.index('REGION_NAME')
+      start_date_index = header.index('START_DATE')
+      end_date_index = header.index('END_DATE')
+
+      for line in csv_reader:
+        
+        id = line[region_name_index]
+        parsed_data[id] = {}
+        parsed_data[id]['start_date'] = ''.join(line[start_date_index].split(' '))
+        parsed_data[id]['end_date'] = ''.join(line[end_date_index].split(' '))
+  except IOError:
+    print "Time_periods file not found. Make sure you are using correct path."
+    raise SystemExit
 
   return parsed_data 
 
@@ -88,26 +97,30 @@ def setup(ulx = 214, uly = 61, brx = 223, bry = 74):
 
 def search(path, row, start_date = None, end_date = None):
   products = []
-  with open('scene_list') as csvfile:
-    csv_reader = csv.reader(csvfile, delimiter = ',')
-    
-    header = csv_reader.next()
-    
-    path_index = header.index('PATH')
-    row_index = header.index('ROW')
-    scene_id_index = header.index('SCENE_ID')
-    download_url_index = header.index('DOWNLOAD_URL')
-    cloud_cover_index = header.index('CLOUD_COVER')
+  try:
+    with open('scene_list') as csvfile:
+      csv_reader = csv.reader(csvfile, delimiter = ',')
+      
+      header = csv_reader.next()
+      
+      path_index = header.index('PATH')
+      row_index = header.index('ROW')
+      scene_id_index = header.index('SCENE_ID')
+      download_url_index = header.index('DOWNLOAD_URL')
+      cloud_cover_index = header.index('CLOUD_COVER')
 
-    for product in csv_reader:
-      if(int(product[path_index]) == path and int(product[row_index]) == row):
-        scene_id = product[scene_id_index]
-        download_url = product[download_url_index]
-        cloud_cover = float(product[cloud_cover_index])
-        product_obj = build_product_obj(scene_id, start_date, end_date, download_url, cloud_cover)
+      for product in csv_reader:
+        if(int(product[path_index]) == path and int(product[row_index]) == row):
+          scene_id = product[scene_id_index]
+          download_url = product[download_url_index]
+          cloud_cover = float(product[cloud_cover_index])
+          product_obj = build_product_obj(scene_id, start_date, end_date, download_url, cloud_cover)
 
-        if(product_obj): 
-          products.append(product_obj)
+          if(product_obj): 
+            products.append(product_obj)
+  except IOError:
+    print "Scene_list file not found. Try run 'python main.py setup' first."
+    raise SystemExit
 
   return products
 
