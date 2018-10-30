@@ -1,4 +1,4 @@
-import sys
+import sys, os
 from modules import mergeTool, crop, ndvi, downloader
 
 def main(regions, time_ranges, shape_files):
@@ -15,7 +15,9 @@ def main(regions, time_ranges, shape_files):
 if __name__ == '__main__':
     if len(sys.argv) < 2:
         print "Insufficient arguments"
-    if sys.argv[1] == 'setup':
+    elif sys.argv[1] == 'setup':
+        os.system("make -C modules/merge/")
+        os.system("make -C modules/ndvi/")
         downloader.setup()
     elif sys.argv[1] == 'run':
         regions = downloader.parse_path_and_rows('samples/semi-arid/path_row.txt')
