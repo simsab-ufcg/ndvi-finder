@@ -179,8 +179,14 @@ def download_scene(scenes, output_directory):
     subprocess.call(['mkdir', '-p', scene_directory])
     for band in bands:
       print 'started download of ' + scene['scene_id'] + '_' + band
-      product_band_id = url_sp[-1] + '_' + band + '.TIF'
-      new_url = '/'.join(url_sp) + '_' + band + '.TIF'
+      product_band_id = ''
+      new_url = ''
+      if band == 'MTL':
+        product_band_id = url_sp[-1] + '_' + band + '.txt'
+        new_url = '/'.join(url_sp) + '_' + band + '.txt'
+      else:
+        product_band_id = url_sp[-1] + '_' + band + '.TIF'
+        new_url = '/'.join(url_sp) + '_' + band + '.TIF'
       FNULL = open(os.devnull, 'w')
       subprocesses.append((subprocess.Popen(' '.join(['curl', new_url, '--output', scene_directory + product_band_id]), 
           shell=True, stdout=FNULL, stderr=FNULL), scene['scene_id'] + '_' + band))
