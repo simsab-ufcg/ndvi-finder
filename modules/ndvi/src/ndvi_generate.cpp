@@ -62,9 +62,15 @@ void NDVIGenerate::landsat(Tiff ndvi, int width_band, int height_band, int mask,
     ldouble line_ndvi[width_band];
 
     for(int line = 0; line < height_band; line ++){
-        TIFFReadScanline(band_4, line_band_4, line);
-        TIFFReadScanline(band_5, line_band_5, line);
-        TIFFReadScanline(band_bqa, line_band_bqa, line);
+        if(TIFFReadScanline(band_4, line_band_4, line) < 0){
+            exit(2);
+        }
+        if(TIFFReadScanline(band_5, line_band_5, line) < 0){
+            exit(2);
+        }
+        if(TIFFReadScanline(band_bqa, line_band_bqa, line) < 0){
+            exit(2);
+        }
 
         // RadianceCalc
         for(int col = 0; col < width_band; col ++){
@@ -103,9 +109,15 @@ void NDVIGenerate::landsat(Tiff ndvi, int width_band, int height_band, int mask)
     ldouble line_ndvi[width_band];
 
     for(int line = 0; line < height_band; line++){
-        TIFFReadScanline(band_4, line_band_4, line);
-        TIFFReadScanline(band_5, line_band_5, line);
-        TIFFReadScanline(band_bqa, line_band_bqa, line);
+        if(TIFFReadScanline(band_4, line_band_4, line) < 0){
+            exit(2);
+        }
+        if(TIFFReadScanline(band_5, line_band_5, line) < 0){
+            exit(2);
+        }
+        if(TIFFReadScanline(band_bqa, line_band_bqa, line) < 0){
+            exit(2);
+        }
 
         for(int col = 0; col < width_band; col++){
             ldouble pixel_band_bqa = pixel_read_band_bqa.readPixel(col);
