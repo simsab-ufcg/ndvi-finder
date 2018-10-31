@@ -32,18 +32,19 @@ def parse_path_and_rows(filename):
         scene_obj['path'] = int(line_sp[2 * i - 1])
         scene_obj['row'] = int(line_sp[2 * i])
         parsed_data[id].append(scene_obj)
+
   
-  # obj = {}
-  # nn = 0
-  # for parse in parsed_data.values():
-  #   for nobj in parse:
-  #     if(not obj.has_key(nobj['path'])):
-  #       obj[nobj['path']] = {}
-  #     if(not obj[nobj['path']].has_key(nobj['row'])):
-  #       obj[nobj['path']][nobj['row']] = True
-  #       nn += 1
+  obj = {}
+  nn = 0
+  for parse in parsed_data.values():
+    for nobj in parse:
+      if(not obj.has_key(nobj['path'])):
+        obj[nobj['path']] = {}
+      if(not obj[nobj['path']].has_key(nobj['row'])):
+        obj[nobj['path']][nobj['row']] = True
+        nn += 1
   
-  # print nn
+  print nn
   return parsed_data
 
 def parse_time_periods(filename):
@@ -237,7 +238,7 @@ def info(path_and_rows_file, time_periods):
         for scene in scenes[path][row]:
           print ','.join([id, str(path), str(row), scene['scene_id'], str(scene['cloud_cover']), scene['download_url']])
         if len(scenes[path][row]) == 0:
-          print ','.join([id, str(path), str(row), 'NOT FOUND', 'NOT FOUND', 'NOT FOUND'])
+          print ','.join([id, str(path), str(row), 'NOT_FOUND', 'NOT_FOUND', 'NOT_FOUND'])
 
 def get_shape_files(path_and_rows, directory_sample):
   ids = path_and_rows.keys()
