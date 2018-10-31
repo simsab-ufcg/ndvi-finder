@@ -13,6 +13,24 @@ def ndvi(path_to_b4_tiff, path_to_b5_tiff, path_to_bqa_tiff, path_to_mtl_tiff, o
 	path_ndvi_output = output_name_ndvi + '.tif'
 	return path_ndvi_output, exit_code
 	
+def converter(path_to_b4_tiff, path_to_b5_tiff, path_to_bqa_tiff, path_to_mtl_tiff, output_name_ndvi):
+
+	separator = " "
+
+	command = separator.join( ('./modules/tiffConverter/run', path_to_b4_tiff,  path_to_b4_tiff[:-4] + 'C.tif') )
+	path_to_b4_tiff =  path_to_b4_tiff[:-4] + 'C.tif'
+	os.system(command)
+
+	command = separator.join( ('./modules/tiffConverter/run', path_to_b5_tiff,  path_to_b5_tiff[:-4]  + 'C.tif') )
+	path_to_b5_tiff =  path_to_b5_tiff[:-4] + 'C.tif'
+	os.system(command)
+
+	command = separator.join( ('./modules/tiffConverter/run', path_to_bqa_tiff,  path_to_bqa_tiff[:-4]  + 'C.tif') )
+	path_to_bqa_tiff =  path_to_bqa_tiff[:-4] + 'C.tif'
+	os.system(command)
+
+	return ndvi(path_to_b4_tiff, path_to_b5_tiff, path_to_bqa_tiff, path_to_mtl_tiff, output_name_ndvi)
+
 
 def calculate_ndvi(raster_path, output_path = "ndvi_scenes/", normalize_output_path = "ndvi_scenes_normalize/"):
 	quant_scenes = len(raster_path) / 4
@@ -26,8 +44,12 @@ def calculate_ndvi(raster_path, output_path = "ndvi_scenes/", normalize_output_p
 
 	for scene in xrange(quant_scenes):
 		path_ndvi_scene, exit_code = ndvi(raster_path[scene*4], raster_path[scene*4+1], raster_path[scene*4+2], raster_path[scene*4+3], output_path + 'ndvi_scene_' + str(scene))
-		
-		if exit_code == 0:
+
+		if (exit_code >> 8) == 2:
+			print "Tiled Tiff will be converted"
+			path_ndvi_scene, exit_code = converter(raster_path[scene*4], raster_path[scene*4+1], raster_path[scene*4+2], raster_path[scene*4+3], output_path + 'ndvi_scene_' + str(scene))
+
+		if (exit_code >> 8) == 0:
 			UL = coordinate.get_coordinate(raster_path[scene*4])
 			georeference.set_georeference(path_ndvi_scene, raster_path[scene*4], UL)
 
