@@ -20,10 +20,6 @@ def get_coordinate(source_tif_path):
 	INDEX_Y = 1
 
 	UL = (coord_tiff[0], coord_tiff[3])
-
-	# Getting upper left point
-	#UL = (coord_tiff[INDEX_X], coord_tiff[INDEX_Y])
-
 	source_tif = None
 
 	return UL
