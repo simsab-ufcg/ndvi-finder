@@ -55,7 +55,3 @@ def merge(path_list, output_name="output"):
 	os.system("rm -f aux.tif")
 
 	return resulting_tiff_path
-
-
-#path_list = ['ndvi_scenes/ndvi_scene_0.tif', 'ndvi_scenes/ndvi_scene_1.tif', 'ndvi_scenes/ndvi_scene_2.tif']
-#merge(path_list)
