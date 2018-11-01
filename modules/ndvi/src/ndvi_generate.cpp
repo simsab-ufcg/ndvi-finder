@@ -43,7 +43,7 @@ void NDVIGenerate::processNDVI(int number_sensor, ldouble dist_sun_earth, Tiff n
             break;
         default:
             cerr << "Type of input bands unsupported!" << endl;
-			exit(1);
+			exit(3);
     } 
 
     _TIFFfree(line_band_4);
