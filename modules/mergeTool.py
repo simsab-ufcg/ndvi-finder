@@ -49,7 +49,7 @@ def merge(path_list, output_name="output"):
 		resulting_tiff_path, exit_code = mergePair( [resulting_tiff_path, path_list[i]], output_name + str(alt) )
 
 		if(exit_code >> 8) != 0:
-			errorHandler.throwError('merge', (exit_code >> 8))
+			errorHandler.throwError('merge', exit_code)
 
 	os.system("rm -f " + output_name + str(alt^1) + '.tif')
 	os.system("rm -f aux.tif")

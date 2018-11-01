@@ -1,9 +1,13 @@
 from osgeo import gdal, osr
+import errorHandler
 import os
 
 def get_coordinate(source_tif_path):
 
 	source_tiff = gdal.Open(source_tif_path)
+	if source_tiff == None:
+		errorHandler.throwError( "Get Coordinate" , 256)
+
 	coord_tiff = source_tiff.GetGeoTransform()
 	width_tiff = source_tiff.RasterXSize
 	height_tiff = source_tiff.RasterYSize

@@ -44,7 +44,7 @@ void NDVIGenerate::processNDVI(int number_sensor, ldouble dist_sun_earth, Tiff n
         default:
             cerr << "Type of input bands unsupported!" << endl;
 			exit(3);
-    } 
+    }
 
     _TIFFfree(line_band_4);
     _TIFFfree(line_band_5);
@@ -100,7 +100,9 @@ void NDVIGenerate::landsat(Tiff ndvi, int width_band, int height_band, int mask,
             line_ndvi[col] = (reflectance_pixel_band_5 - reflectance_pixel_band_4) / (reflectance_pixel_band_5 + reflectance_pixel_band_4);
         }
 
-        TIFFWriteScanline(ndvi, line_ndvi, line);
+        if(TIFFWriteScanline(ndvi, line_ndvi, line) < 0){
+            exit(4);
+        }
     }
 }
 
@@ -136,6 +138,8 @@ void NDVIGenerate::landsat(Tiff ndvi, int width_band, int height_band, int mask)
             line_ndvi[col] = (reflectance_pixel_band_5 - reflectance_pixel_band_4) / (reflectance_pixel_band_5 + reflectance_pixel_band_4);
 
         }
-        TIFFWriteScanline(ndvi, line_ndvi, line);
+        if (TIFFWriteScanline(ndvi, line_ndvi, line) < 0) {
+            exit(4);
+        }
     }
 }

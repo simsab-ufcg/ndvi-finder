@@ -9,7 +9,6 @@ def main(regions, time_ranges, shape_files):
             scenes_raster = downloader.search(scene['path'], scene['row'], time_ranges[region]['start_date'], time_ranges[region]['end_date'])
             raster_paths = downloader.download_scene(scenes_raster, 'semi-arid/' + region + '/')
             ndvi_results += ndvi.calculate_ndvi(raster_paths)
-            exit(0)
         sub_regions_raster += crop.crop ( mergeTool.merge( ndvi_results ), shape_files[region] , region)
     mergeTool.merge( sub_regions_raster )
 
