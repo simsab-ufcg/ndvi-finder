@@ -1,6 +1,6 @@
 #include "merge.h"
 
-MergeTiff::MergeTiff(Tiff _input_base[2], string _output_base_name, Square _input_square[2], Square _output_square, string _output_read_name){
+MergeTiff::MergeTiff(Tiff _input_base[2], string _output_base_name, Square _input_square[2], Square _output_square, string _output_read_name) {
     input_base[0] = _input_base[0];
     input_base[1] = _input_base[1];
     output_base_name = _output_base_name;
@@ -12,24 +12,24 @@ MergeTiff::MergeTiff(Tiff _input_base[2], string _output_base_name, Square _inpu
     intersect = MergeMeanFunction();
 }
 
-void MergeTiff::merge(){
+void MergeTiff::merge() {
 
-    for(int i = 0; i < 2; i++){
-
+    for(int i = 0; i < 2; i++) {
         Tiff output_read, output_base;
 
         cout << "";
-        if((i%2) == 0){
+        if( (i%2) == 0 ){
             output_read = TIFFOpen(output_base_name.c_str(), "rm");
             output_base = TIFFOpen(output_read_name.c_str(), "w8m");
-        }else{
+        } else {
             output_read = TIFFOpen(output_read_name.c_str(), "rm");
             output_base = TIFFOpen(output_base_name.c_str(), "w8m");
-            
         }
 
-        int imageWidth = fabs( (output_square.DR.x - output_square.UL.x) / pixelWidth ) + 1;
+        if(!output_read) exit(1);
+        if(!output_base) exit(1);
 
+        int imageWidth = fabs( (output_square.DR.x - output_square.UL.x) / pixelWidth ) + 1;
         int imageLength = fabs( (output_square.DR.y - output_square.UL.y) / pixelHeight ) + 1;
 
         TIFFSetField(output_base, TIFFTAG_IMAGEWIDTH     , imageWidth); 
@@ -46,9 +46,9 @@ void MergeTiff::merge(){
         TIFFSetField(output_base, TIFFTAG_PLANARCONFIG   , PLANARCONFIG_CONTIG);
         
         ldouble line[imageWidth];
-        for(register int z = 0; z < imageLength; z++){
-            TIFFReadScanline(output_read, line, z);
-            TIFFWriteScanline(output_base, line, z);
+        for(register int z = 0; z < imageLength; z++) {
+            if( TIFFReadScanline(output_read, line, z) < 0 ) exit(2);
+            if( TIFFWriteScanline(output_base, line, z) < 0 ) exit(4);
         }
 
         int output_width = imageWidth;
@@ -71,9 +71,8 @@ void MergeTiff::merge(){
         ldouble write_line[output_width];     
 
         for(register int j = 0; j < input_length; j++){
-            
-            TIFFReadScanline(output_read, write_line, j + offsetY);
-            TIFFReadScanline(input_base[i], input_line, j);
+            if( TIFFReadScanline(output_read, write_line, j + offsetY) < 0 ) exit(2);
+            if( TIFFReadScanline(input_base[i], input_line, j) < 0 ) exit(2);
 
             for(register int k = 0; k < output_width; k++){
                 if(k >= offsetX && (k - offsetX) < input_width){
@@ -82,12 +81,12 @@ void MergeTiff::merge(){
                 }
             }
 
-            TIFFWriteScanline(output_base, write_line, j + offsetY);
+            if( TIFFWriteScanline(output_base, write_line, j + offsetY) ) exit(4);
         }
+
         TIFFClose(output_read);
         TIFFClose(output_base);
         TIFFClose(input_base[i]);
         _TIFFfree(input_line);
     }
-
 }

@@ -15,7 +15,6 @@ void logger(string description){
 
 void setup(Square square, Tiff output){
     int imageWidth = fabs( (square.DR.x - square.UL.x) / pixelWidth ) + 1;
-
     int imageLength = fabs( (square.DR.y - square.UL.y) / pixelHeight ) + 1;
 
     TIFFSetField(output, TIFFTAG_IMAGEWIDTH     , imageWidth); 
@@ -38,7 +37,7 @@ void setup(Square square, Tiff output){
     }
     
     for(register int i = 0; i < imageLength; i++){
-        TIFFWriteScanline(output, line, i);
+        if(TIFFWriteScanline(output, line, i) < 0) exit(4);
     }
 }
 
@@ -61,7 +60,6 @@ Square joinSquares(Square a, Square b){
 int main(int argc, char *argv[]){
 
     // constants
-
     const int INPUT_BASE_INDEX[2] = {1, 4};
     const int INPUT_COORD_VALUES[2][2] = {{2, 3}, {5, 6}};
 
@@ -70,7 +68,6 @@ int main(int argc, char *argv[]){
     const string AUX_TIF = "aux.tif";
 
     // valid arguments
-    
     if(argc != 8){
         cerr << "Arguments insufficients\n";
         exit(0);
@@ -88,7 +85,10 @@ int main(int argc, char *argv[]){
         ldouble y1 = atof(argv[INPUT_COORD_VALUES[i][1]]);
         
         string path_tiff_base = argv[INPUT_BASE_INDEX[i]];
+
         bases[i] = TIFFOpen(path_tiff_base.c_str(), "rm");
+        if(!bases[i]) exit(1);
+
         int width, length;
 
         TIFFGetField(bases[i], TIFFTAG_IMAGEWIDTH     , &width); 
@@ -101,15 +101,15 @@ int main(int argc, char *argv[]){
     logger("process output");
 
     output_base = TIFFOpen( argv[OUTPUT_BASE_INDEX], "w8m" );
+    if(!output_base) exit(1);
 
     output_square = joinSquares(squares[0], squares[1]);
-
+    
     setup(output_square, output_base);
 
     TIFFClose(output_base);
 
     // start merge
-
     logger("merge start");
 
     MergeTiff merge = MergeTiff(bases, argv[OUTPUT_BASE_INDEX], squares, output_square, AUX_TIF);
