@@ -8,6 +8,7 @@ def throwError(step, code):
 		3: 'Unsupported band in TIFF file.'
 		4: 'Could not write in TIFF file.'
 		5: 'Could not read MTL file.'
+		6: 'Could not read Coordinate of TIFF file.'
 	}
 
 	if switch.has_key(exit_code):
