@@ -36,8 +36,8 @@ def mergePair(path_list, output_name):
 
 def merge(path_list, output_name="output"):
 	'''
-	Takes paths of N distinct ndvi_tiff files, merge all
-	of them in a single big tiff and returns the path to this tiff
+	Takes paths of N distinct ndvi_tiff files, merge all of them
+	in a single big tiff and returns the path to this tiff
 	'''
 
 	alt = 1
@@ -45,7 +45,7 @@ def merge(path_list, output_name="output"):
 
 	for i in xrange(1, len(path_list)):
 		alt ^= 1
-		os.system("rm -f " + output_name + str(alt))
+		os.system("rm -f " + output_name + str(alt) + '.tif')
 		resulting_tiff_path, exit_code = mergePair( [resulting_tiff_path, path_list[i]], output_name + str(alt) )
 
 		if(exit_code >> 8) != 0:
