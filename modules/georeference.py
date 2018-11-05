@@ -4,7 +4,7 @@ import errorHandler
 def set_georeference(src_path, base_path, coord_upper_left):
 
 	base_ds = gdal.Open(base_path)
-	if base_fs == None:
+	if base_ds == None:
 		errorHandler.throwError("Set georeference", 256)
 
 	base_coord = base_ds.GetGeoTransform()
