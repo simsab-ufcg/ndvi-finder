@@ -3,11 +3,11 @@ def throwError(step, code):
 	signal_code = (511 & code)
 
 	switch = {
-		1: 'Could not open TIFF file.'
-		2: 'Could not read from TIFF file.'
-		3: 'Unsupported band in TIFF file.'
-		4: 'Could not write in TIFF file.'
-		5: 'Could not read MTL file.'
+		1: 'Could not open TIFF file.',
+		2: 'Could not read from TIFF file.',
+		3: 'Unsupported band in TIFF file.',
+		4: 'Could not write in TIFF file.',
+		5: 'Could not read MTL file.',
 		6: 'Could not read Coordinate of TIFF file.'
 	}
 
