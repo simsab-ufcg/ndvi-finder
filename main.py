@@ -18,7 +18,6 @@ if __name__ == '__main__':
     elif sys.argv[1] == 'setup':
         os.system("make -C modules/merge/")
         os.system("make -C modules/ndvi/")
-        os.system("make -C modules/tiffConverter/")
         downloader.setup()
     elif sys.argv[1] == 'run':
         regions = downloader.parse_path_and_rows('samples/semi-arid/path_row.txt')
