@@ -3,7 +3,7 @@
 #include <unistd.h>
 #include <string.h>
 #include "read_meta.h"
-#include "read_sun_earth.h"
+//#include "read_sun_earth.h"
 #include "ndvi_generate.h"
 #include "utils.h"
 
@@ -69,8 +69,8 @@ void setup(Tiff ndvi, Tiff bandBase){
 
 int main(int argc, char *argv[]){
 
-    const int INPUT_BAND_4_INDEX = 1;
-    const int INPUT_BAND_5_INDEX = 2;
+    const int INPUT_BAND_RED_INDEX = 1;
+    const int INPUT_BAND_NIR_INDEX = 2;
     const int INPUT_BAND_BQA_INDEX = 3;
     const int INPUT_BAND_MTL_INDEX = 4;
     const int OUTPUT_NAME_INDEX = 5;
@@ -85,25 +85,26 @@ int main(int argc, char *argv[]){
     string path_meta_file = argv[INPUT_BAND_MTL_INDEX];
     ReadMeta reader_meta = ReadMeta(path_meta_file);
     ldouble sun_elevation = reader_meta.getSunElevation();
+    ldouble dist_sun_earth = reader_meta.getDistEarthSun();
     int number_sensor = reader_meta.getNumberSensor();
-    int julian_day = reader_meta.getJulianDay();
-    int year = reader_meta.getYear();
+    //int julian_day = reader_meta.getJulianDay();
+    //int year = reader_meta.getYear();
 
     //load distance between sun and earth
-    string path_d_sun_earth = "./src/d_sun_earth";
-    ReadSunEarth reader_sun_earth = ReadSunEarth(path_d_sun_earth);
-    ldouble dist_sun_earth = reader_sun_earth.getDistance(julian_day);
+    //string path_d_sun_earth = "./src/d_sun_earth";
+    //ReadSunEarth reader_sun_earth = ReadSunEarth(path_d_sun_earth);
+    //ldouble dist_sun_earth = reader_sun_earth.getDistance(julian_day);
 
-    //load band 4 (tiff)
-    string path_tiff_band_4 = argv[INPUT_BAND_4_INDEX];
-    Tiff band_4 = TIFFOpen(path_tiff_band_4.c_str(), "rm");
-    if(!band_4){
+    //load band red (tiff)
+    string path_tiff_band_red = argv[INPUT_BAND_RED_INDEX];
+    Tiff band_red = TIFFOpen(path_tiff_band_red.c_str(), "rm");
+    if(!band_red){
         exit(1);
     }
-    //load band 5 (tiff)
-    string path_tiff_band_5 = argv[INPUT_BAND_5_INDEX];
-    Tiff band_5 = TIFFOpen(path_tiff_band_5.c_str(), "rm");
-    if(!band_5){
+    //load band nir (tiff)
+    string path_tiff_band_nir = argv[INPUT_BAND_NIR_INDEX];
+    Tiff band_nir = TIFFOpen(path_tiff_band_nir.c_str(), "rm");
+    if(!band_nir){
         exit(1);
     }
 
@@ -120,17 +121,17 @@ int main(int argc, char *argv[]){
     if(!ndvi){
         exit(1);
     }
-    setup(ndvi, band_4);
+    setup(ndvi, band_red);
 
     logger("Preprocess");
 
-    NDVIGenerate ndviGen(sun_elevation, band_4, band_5, band_bqa);
+    NDVIGenerate ndviGen(sun_elevation, band_red, band_nir, band_bqa);
     ndviGen.processNDVI(number_sensor, dist_sun_earth, ndvi);
 
     logger("NDVICalc");
 
-    TIFFClose(band_4);
-    TIFFClose(band_5);
+    TIFFClose(band_red);
+    TIFFClose(band_nir);
     TIFFClose(band_bqa);
     TIFFClose(ndvi);
 
