@@ -196,8 +196,13 @@ def download_scene(scenes, output_directory):
   for scene in scenes:
     url_sp = scene['download_url'].split('/')
     url_sp.append(url_sp[-1])
-    bands = ['B4', 'B5', 'BQA', 'MTL']
     scene_id = scene['scene_id']
+    bands = []
+    if scene_id[2] == '8':
+      bands = ['B4', 'B5', 'BQA', 'MTL']
+    else:
+      bands = ['B3', 'B4', 'BQA', 'MTL']
+    
     pathrow = str(get_path_from_scene_id(scene_id)) + str(get_row_from_scene_id(scene_id))
     scene_directory = output_directory + pathrow + '/' + scene['scene_id'] + '/'
     subprocess.call(['mkdir', '-p', scene_directory])
