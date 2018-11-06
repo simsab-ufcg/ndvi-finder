@@ -15,5 +15,5 @@ def throwError(step, code):
 		print 'Error while in ' + step + ' step. ' + switch[exit_code]
 	else:
 		print 'Unexpected error: signal error was ' + str(signal_code) + '. Step: ' + step
-
-	raise SystemExit
+		raise SystemExit
+	
