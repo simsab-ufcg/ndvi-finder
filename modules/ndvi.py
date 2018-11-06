@@ -3,32 +3,32 @@ import georeference
 import coordinate
 import errorHandler
 
-def ndvi(path_to_b4_tiff, path_to_b5_tiff, path_to_bqa_tiff, path_to_mtl_tiff, output_name_ndvi):
+def ndvi(path_to_band_red_tiff, path_to_band_nir_tiff, path_to_bqa_tiff, path_to_mtl_tiff, output_name_ndvi):
 
 	separator = " "
-	command = separator.join( ('./modules/ndvi/run', path_to_b4_tiff, path_to_b5_tiff, path_to_bqa_tiff, path_to_mtl_tiff) )
+	command = separator.join( ('./modules/ndvi/run', path_to_band_red_tiff, path_to_band_nir_tiff, path_to_bqa_tiff, path_to_mtl_tiff) )
 	command = separator.join( (command, output_name_ndvi + '.tif') )
 	exit_code = os.system(command)
 	path_ndvi_output = output_name_ndvi + '.tif'
 	return path_ndvi_output, exit_code
 	
-def converter(path_to_b4_tiff, path_to_b5_tiff, path_to_bqa_tiff, path_to_mtl_tiff, output_name_ndvi):
+def converter(path_to_band_red_tiff, path_to_band_nir_tiff, path_to_bqa_tiff, path_to_mtl_tiff, output_name_ndvi):
 
 	separator = " "
 
-	command = separator.join( ('gdal_translate -co', '\"TILED=NO\"', path_to_b4_tiff,  path_to_b4_tiff[:-4] + 'C.tif') )
-	path_to_b4_tiff =  path_to_b4_tiff[:-4] + 'C.tif'
+	command = separator.join( ('gdal_translate -co', '\"TILED=NO\"', path_to_band_red_tiff,  path_to_band_red_tiff[:-4] + 'C.tif') )
+	path_to_band_red_tiff =  path_to_band_red_tiff[:-4] + 'C.tif'
 	os.system(command)
 
-	command = separator.join( ('gdal_translate -co', '\"TILED=NO\"', path_to_b5_tiff,  path_to_b5_tiff[:-4] + 'C.tif') )
-	path_to_b5_tiff = path_to_b5_tiff[:-4] + 'C.tif'
+	command = separator.join( ('gdal_translate -co', '\"TILED=NO\"', path_to_band_nir_tiff,  path_to_band_nir_tiff[:-4] + 'C.tif') )
+	path_to_band_nir_tiff = path_to_band_nir_tiff[:-4] + 'C.tif'
 	os.system(command)
 
 	command = separator.join( ('gdal_translate -co', '\"TILED=NO\"', path_to_bqa_tiff,  path_to_bqa_tiff[:-4] + 'C.tif') )
 	path_to_bqa_tiff =  path_to_bqa_tiff[:-4] + 'C.tif'
 	os.system(command)
 
-	return ndvi(path_to_b4_tiff, path_to_b5_tiff, path_to_bqa_tiff, path_to_mtl_tiff, output_name_ndvi)
+	return ndvi(path_to_band_red_tiff, path_to_band_nir_tiff, path_to_bqa_tiff, path_to_mtl_tiff, output_name_ndvi)
 
 
 def calculate_ndvi(raster_path, output_path = "ndvi_scenes/", normalize_output_path = "ndvi_scenes_normalize/"):
