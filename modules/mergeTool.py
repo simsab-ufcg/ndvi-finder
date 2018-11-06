@@ -1,6 +1,7 @@
 import os
 import coordinate
 import georeference
+import errorHandler
 
 def mergePair(path_list, output_name):
 	'''
@@ -22,7 +23,7 @@ def mergePair(path_list, output_name):
 	command = separator.join( (command, tiff2, str(tiff2_coord[X_INDEX]), str(tiff2_coord[Y_INDEX])) )
 	command = separator.join( (command, output_name + '.tif') )
 
-	os.system(command)
+	exit_code = os.system(command)
 	output_path = output_name + '.tif'
 
 	maxY = max(tiff1_coord[Y_INDEX], tiff2_coord[Y_INDEX])
@@ -31,12 +32,12 @@ def mergePair(path_list, output_name):
 	output_coord = (minX, maxY)
 
 	georeference.set_georeference(output_path, tiff1, output_coord)
-	return output_path
+	return output_path, exit_code
 
 def merge(path_list, output_name="output"):
 	'''
-	Takes paths of N distinct ndvi_tiff files, merge all
-	of them in a single big tiff and returns the path to this tiff
+	Takes paths of N distinct ndvi_tiff files, merge all of them
+	in a single big tiff and returns the path to this tiff
 	'''
 
 	alt = 1
@@ -44,14 +45,13 @@ def merge(path_list, output_name="output"):
 
 	for i in xrange(1, len(path_list)):
 		alt ^= 1
-		os.system("rm -f " + output_name + str(alt))
-		resulting_tiff_path = mergePair( [resulting_tiff_path, path_list[i]], output_name + str(alt) )
+		os.system("rm -f " + output_name + str(alt) + '.tif')
+		resulting_tiff_path, exit_code = mergePair( [resulting_tiff_path, path_list[i]], output_name + str(alt) )
+
+		if(exit_code >> 8) != 0:
+			errorHandler.throwError('merge', exit_code)
 
 	os.system("rm -f " + output_name + str(alt^1) + '.tif')
 	os.system("rm -f aux.tif")
 
 	return resulting_tiff_path
-
-
-#path_list = ['ndvi_scenes/ndvi_scene_0.tif', 'ndvi_scenes/ndvi_scene_1.tif', 'ndvi_scenes/ndvi_scene_2.tif']
-#merge(path_list)

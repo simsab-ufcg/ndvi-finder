@@ -13,9 +13,10 @@ struct ReadMeta{
 
     string search(string filter);
     ldouble getSunElevation();
+    ldouble getDistEarthSun();
     int getNumberSensor();
-    int getJulianDay();
-    int getYear();
+    //int getJulianDay();
+    //int getYear();
 };
 
 

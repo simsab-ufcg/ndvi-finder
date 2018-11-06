@@ -14,7 +14,7 @@ def main(regions, time_ranges, shape_files):
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
-        print "Insufficient arguments"
+        print "Insufficient arguments. Use 'python main.py run|setup'"
     elif sys.argv[1] == 'setup':
         os.system("make -C modules/merge/")
         os.system("make -C modules/ndvi/")

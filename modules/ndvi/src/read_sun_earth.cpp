@@ -2,6 +2,9 @@
 
 ldouble ReadSunEarth::getDistance(int julian_day){
     ifstream in(path_d_sun_earth);
+    if(!in.is_open()){
+        exit(5);
+    }
     string line;
     bool flag = false;
     while(getline(in, line)){
