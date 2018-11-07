@@ -13,6 +13,9 @@ def ndvi(path_to_band_red_tiff, path_to_band_nir_tiff, path_to_bqa_tiff, path_to
 	return path_ndvi_output, exit_code
 	
 def converter(path_to_band_red_tiff, path_to_band_nir_tiff, path_to_bqa_tiff, path_to_mtl_tiff, output_name_ndvi):
+	'''
+	Converts Tiled Tiffs to normal Tiffs, returning its paths 
+	'''
 
 	separator = " "
 
@@ -38,6 +41,11 @@ def converter(path_to_band_red_tiff, path_to_band_nir_tiff, path_to_bqa_tiff, pa
 
 
 def calculate_ndvi(raster_path, output_path = "ndvi_scenes/", normalize_output_path = "ndvi_scenes_normalize/"):
+	'''
+	Takes paths of all needed bands + MTL for one or more scenes, calculates
+	the NDVI for each of them and returns paths to resulting tiffs
+	'''
+
 	quant_scenes = len(raster_path) / 4
 
 	ndvis_path = []
@@ -67,3 +75,4 @@ def calculate_ndvi(raster_path, output_path = "ndvi_scenes/", normalize_output_p
 	os.system('rm -rf ' + output_path)
 
 	return ndvis_path
+

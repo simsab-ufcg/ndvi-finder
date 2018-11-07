@@ -1,4 +1,9 @@
 def throwError(step, code):
+	'''
+	Takes a code of error and print its message (in case of a known error).
+	In case of a unknown error, halts program execution.
+	'''
+
 	exit_code = (code >> 8)
 	signal_code = (511 & code)
 
