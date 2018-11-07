@@ -17,14 +17,20 @@ def converter(path_to_band_red_tiff, path_to_band_nir_tiff, path_to_bqa_tiff, pa
 	separator = " "
 
 	command = separator.join( ('gdal_translate -co', '\"TILED=NO\"', path_to_band_red_tiff,  path_to_band_red_tiff[:-4] + 'C.tif') )
+	command = separator.join((command, '2> /tmp/libtiff.out'))
+
 	path_to_band_red_tiff =  path_to_band_red_tiff[:-4] + 'C.tif'
 	os.system(command)
 
 	command = separator.join( ('gdal_translate -co', '\"TILED=NO\"', path_to_band_nir_tiff,  path_to_band_nir_tiff[:-4] + 'C.tif') )
+	command = separator.join((command, '2> /tmp/libtiff.out'))
+
 	path_to_band_nir_tiff = path_to_band_nir_tiff[:-4] + 'C.tif'
 	os.system(command)
 
 	command = separator.join( ('gdal_translate -co', '\"TILED=NO\"', path_to_bqa_tiff,  path_to_bqa_tiff[:-4] + 'C.tif') )
+	command = separator.join((command, '2> /tmp/libtiff.out'))
+	
 	path_to_bqa_tiff =  path_to_bqa_tiff[:-4] + 'C.tif'
 	os.system(command)
 
@@ -45,7 +51,6 @@ def calculate_ndvi(raster_path, output_path = "ndvi_scenes/", normalize_output_p
 		path_ndvi_scene, exit_code = ndvi(raster_path[scene*4], raster_path[scene*4+1], raster_path[scene*4+2], raster_path[scene*4+3], output_path + 'ndvi_scene_' + str(scene))
 
 		if (exit_code >> 8) == 2:
-			print "Tiled Tiff will be converted"
 			os.system('rm -rf ' + path_ndvi_scene)
 			path_ndvi_scene, exit_code = converter(raster_path[scene*4], raster_path[scene*4+1], raster_path[scene*4+2], raster_path[scene*4+3], output_path + 'ndvi_scene_' + str(scene))
 
