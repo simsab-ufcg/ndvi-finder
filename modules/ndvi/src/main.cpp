@@ -35,7 +35,7 @@ bool analisyShadow(Tiff band_bqa, int number_sensor){
 
     for(int line = 0; line < height_tiff_bqa; line++){
         if(TIFFReadScanline(band_bqa, buf, line) < 0){
-            exit(2);
+            exit(2 << 3);
         }
         for(int row = 0; row < width_tiff_bqa; row++){
             pixel = prBqa.readPixel(row);
@@ -99,27 +99,27 @@ int main(int argc, char *argv[]){
     string path_tiff_band_red = argv[INPUT_BAND_RED_INDEX];
     Tiff band_red = TIFFOpen(path_tiff_band_red.c_str(), "rm");
     if(!band_red){
-        exit(1);
+        exit(1 << 3);
     }
     //load band nir (tiff)
     string path_tiff_band_nir = argv[INPUT_BAND_NIR_INDEX];
     Tiff band_nir = TIFFOpen(path_tiff_band_nir.c_str(), "rm");
     if(!band_nir){
-        exit(1);
+        exit(1 << 3);
     }
 
     //load band_bqa (tiff)
     string path_tiff_band_bqa = argv[INPUT_BAND_BQA_INDEX];
     Tiff band_bqa = TIFFOpen(path_tiff_band_bqa.c_str(), "rm");
     if(!band_bqa){
-        exit(1);
+        exit(1 << 3);
     }
 
     //load tiff ndvi
     string path_output_tiff_ndvi = argv[OUTPUT_NAME_INDEX];
     Tiff ndvi = TIFFOpen(path_output_tiff_ndvi.c_str(), "w8m");
     if(!ndvi){
-        exit(1);
+        exit(1 << 3);
     }
     setup(ndvi, band_red);
 

@@ -4,7 +4,7 @@
 string ReadMeta::search(string filter){
     ifstream in(path_meta_file);
     if(!in.is_open()){
-        exit(5);
+        exit(5 << 3);
     }
     string line;
     bool flag = false;

@@ -43,7 +43,7 @@ void NDVIGenerate::processNDVI(int number_sensor, ldouble dist_sun_earth, Tiff n
             break;
         default:
             cerr << "Type of input bands unsupported!" << endl;
-			exit(3);
+			exit(3 << 3);
     }
 
     _TIFFfree(line_band_red);
@@ -63,13 +63,13 @@ void NDVIGenerate::landsat(Tiff ndvi, int width_band, int height_band, int mask,
 
     for(int line = 0; line < height_band; line ++){
         if(TIFFReadScanline(band_red, line_band_red, line) < 0){
-            exit(2);
+            exit(2 << 3);
         }
         if(TIFFReadScanline(band_nir, line_band_nir, line) < 0){
-            exit(2);
+            exit(2 << 3);
         }
         if(TIFFReadScanline(band_bqa, line_band_bqa, line) < 0){
-            exit(2);
+            exit(2 << 3);
         }
 
         // RadianceCalc
@@ -106,7 +106,7 @@ void NDVIGenerate::landsat(Tiff ndvi, int width_band, int height_band, int mask,
         }
 
         if(TIFFWriteScanline(ndvi, line_ndvi, line) < 0){
-            exit(4);
+            exit(4 << 3);
         }
     }
 }
@@ -117,13 +117,13 @@ void NDVIGenerate::landsat(Tiff ndvi, int width_band, int height_band, int mask)
 
     for(int line = 0; line < height_band; line++){
         if(TIFFReadScanline(band_red, line_band_red, line) < 0){
-            exit(2);
+            exit(2 << 3);
         }
         if(TIFFReadScanline(band_nir, line_band_nir, line) < 0){
-            exit(2);
+            exit(2 << 3);
         }
         if(TIFFReadScanline(band_bqa, line_band_bqa, line) < 0){
-            exit(2);
+            exit(2 << 3);
         }
 
         for(int col = 0; col < width_band; col++){
@@ -148,7 +148,7 @@ void NDVIGenerate::landsat(Tiff ndvi, int width_band, int height_band, int mask)
                 line_ndvi[col] = -1;
         }
         if (TIFFWriteScanline(ndvi, line_ndvi, line) < 0) {
-            exit(4);
+            exit(4 << 3);
         }
     }
 }

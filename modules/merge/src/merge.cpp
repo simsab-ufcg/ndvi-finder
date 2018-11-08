@@ -26,8 +26,8 @@ void MergeTiff::merge() {
             output_base = TIFFOpen(output_base_name.c_str(), "w8m");
         }
 
-        if(!output_read) exit(1);
-        if(!output_base) exit(1);
+        if(!output_read) exit(1 << 3);
+        if(!output_base) exit(1 << 3);
 
         int imageWidth = fabs( (output_square.DR.x - output_square.UL.x) / pixelWidth ) + 1;
         int imageLength = fabs( (output_square.DR.y - output_square.UL.y) / pixelHeight ) + 1;
@@ -47,8 +47,8 @@ void MergeTiff::merge() {
         
         ldouble line[imageWidth];
         for(register int z = 0; z < imageLength; z++) {
-            if( TIFFReadScanline(output_read, line, z) < 0 ) exit(2);
-            if( TIFFWriteScanline(output_base, line, z) < 0 ) exit(4);
+            if( TIFFReadScanline(output_read, line, z) < 0 ) exit(2 << 3);
+            if( TIFFWriteScanline(output_base, line, z) < 0 ) exit(4 << 3);
         }
 
         int output_width = imageWidth;
@@ -71,8 +71,8 @@ void MergeTiff::merge() {
         ldouble write_line[output_width];     
 
         for(register int j = 0; j < input_length; j++){
-            if( TIFFReadScanline(output_read, write_line, j + offsetY) < 0 ) exit(2);
-            if( TIFFReadScanline(input_base[i], input_line, j) < 0 ) exit(2);
+            if( TIFFReadScanline(output_read, write_line, j + offsetY) < 0 ) exit(2 << 3);
+            if( TIFFReadScanline(input_base[i], input_line, j) < 0 ) exit(2 << 3);
 
             for(register int k = 0; k < output_width; k++){
                 if(k >= offsetX && (k - offsetX) < input_width){
@@ -80,7 +80,8 @@ void MergeTiff::merge() {
                     write_line[k] = pix;
                 }
             }
-            if( TIFFWriteScanline(output_base, write_line, j + offsetY) < 0) exit(4);
+
+            if( TIFFWriteScanline(output_base, write_line, j + offsetY) ) exit(4 << 3);
         }
 
         TIFFClose(output_read);
