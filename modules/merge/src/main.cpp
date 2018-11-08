@@ -37,7 +37,7 @@ void setup(Square square, Tiff output){
     }
     
     for(register int i = 0; i < imageLength; i++){
-        if(TIFFWriteScanline(output, line, i) < 0) exit(4);
+        if(TIFFWriteScanline(output, line, i) < 0) exit(4 << 3);
     }
 }
 
@@ -87,7 +87,7 @@ int main(int argc, char *argv[]){
         string path_tiff_base = argv[INPUT_BASE_INDEX[i]];
 
         bases[i] = TIFFOpen(path_tiff_base.c_str(), "rm");
-        if(!bases[i]) exit(1);
+        if(!bases[i]) exit(1 << 3);
 
         int width, length;
 
@@ -101,7 +101,7 @@ int main(int argc, char *argv[]){
     logger("process output");
 
     output_base = TIFFOpen( argv[OUTPUT_BASE_INDEX], "w8m" );
-    if(!output_base) exit(1);
+    if(!output_base) exit(1 << 3);
 
     output_square = joinSquares(squares[0], squares[1]);
     
