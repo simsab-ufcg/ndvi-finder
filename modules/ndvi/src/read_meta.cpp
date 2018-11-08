@@ -3,7 +3,7 @@
 
 string ReadMeta::search(string filter){
     ifstream in(path_meta_file);
-    if(!in.is_open()){
+    if(!in.is_open() || !in){
         exit(5);
     }
     string line;
@@ -36,17 +36,3 @@ int ReadMeta::getNumberSensor(){
     strncpy(number, &resultSearch[3], 1);
     return atoi(number);
 }
-
-/*int ReadMeta::getJulianDay(){
-    string resultSearch = search("LANDSAT_SCENE_ID");
-    char julianDay[3];
-    strncpy(julianDay, &resultSearch[14], 3);
-    return atoi(julianDay);
-}
-
-int ReadMeta::getYear(){
-    string resultSearch = search("LANDSAT_SCENE_ID");
-    char year[4];
-    strncpy(year, &resultSearch[10], 4);
-    return atoi(year);
-}*/
