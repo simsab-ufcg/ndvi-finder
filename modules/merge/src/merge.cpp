@@ -80,8 +80,7 @@ void MergeTiff::merge() {
                     write_line[k] = pix;
                 }
             }
-
-            if( TIFFWriteScanline(output_base, write_line, j + offsetY) ) exit(4);
+            if( TIFFWriteScanline(output_base, write_line, j + offsetY) < 0) exit(4);
         }
 
         TIFFClose(output_read);
