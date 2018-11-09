@@ -3,6 +3,9 @@ import errorHandler
 import os
 
 def get_coordinate(source_tif_path):
+	'''
+	Takes a tiff as parameter and returns its upper left point coordinates.
+	'''
 
 	source_tiff = gdal.Open(source_tif_path)
 	if source_tiff == None:

@@ -2,6 +2,9 @@ from osgeo import gdal, osr
 import errorHandler
 
 def set_georeference(src_path, base_path, coord_upper_left):
+	'''
+	Sets georeference and projection of a tiff based on a source tiff.
+	'''
 
 	base_ds = gdal.Open(base_path)
 	if base_ds == None:
