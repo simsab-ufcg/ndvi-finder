@@ -6,7 +6,7 @@ import errorHandler
 def mergePair(path_list, output_name):
 	'''
 	Takes paths of two distinct ndvi_tiff files, 
-	merge those files and returns the path of merged tiff
+	merge those files and returns the path of merged tiff.
 	'''
 
 	X_INDEX = 0
@@ -37,7 +37,7 @@ def mergePair(path_list, output_name):
 def merge(path_list, merged_path, output_name="output"):
 	'''
 	Takes paths of N distinct ndvi_tiff files, merge all of them
-	in a single big tiff and returns the path to this tiff
+	in a single big tiff and returns the path to this tiff.
 	'''
 	
 	merged = True if (len(merged_path)) else False

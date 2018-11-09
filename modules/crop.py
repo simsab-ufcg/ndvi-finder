@@ -1,6 +1,9 @@
 import os
 
 def crop(src_path, shape_path, output_name, output_path = 'crop_sub_regions/'):
+    '''
+    Crops a tiff based on a shapefile, then returns the resulting tiff path.
+    '''
 
     os.system('mkdir -p ' + output_path)
 

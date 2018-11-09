@@ -4,6 +4,9 @@ import coordinate
 import errorHandler
 
 def ndvi(path_to_band_red_tiff, path_to_band_nir_tiff, path_to_bqa_tiff, path_to_mtl_tiff, output_name_ndvi):
+	'''
+	Executing cplusplus code to calculate ndvi for a given scene, returning path to resulting tiff and the exit code.
+	'''
 
 	separator = " "
 	command = separator.join( ('./modules/ndvi/run', path_to_band_red_tiff, path_to_band_nir_tiff, path_to_bqa_tiff, path_to_mtl_tiff) )
@@ -14,7 +17,7 @@ def ndvi(path_to_band_red_tiff, path_to_band_nir_tiff, path_to_bqa_tiff, path_to
 	
 def converter(path_to_band_red_tiff, path_to_band_nir_tiff, path_to_bqa_tiff, path_to_mtl_tiff, output_name_ndvi):
 	'''
-	Converts Tiled Tiffs to normal Tiffs, returning its paths 
+	Converts Tiled Tiffs to normal Tiffs, calculates ndvi for the given scene and returns resulting tiff path.
 	'''
 
 	separator = " "
@@ -42,7 +45,7 @@ def converter(path_to_band_red_tiff, path_to_band_nir_tiff, path_to_bqa_tiff, pa
 def calculate_ndvi(raster_path, output_path = "ndvi_scenes/", normalize_output_path = "ndvi_scenes_normalize/"):
 	'''
 	Takes paths of all needed bands + MTL for one or more scenes, calculates
-	the NDVI for each of them and returns paths to resulting tiffs
+	the NDVI for each of them and returns paths to resulting tiffs.
 	'''
 
 	quant_scenes = len(raster_path) / 4
