@@ -1,3 +1,4 @@
+
 #include "ndvi_generate.h"
 
 NDVIGenerate::NDVIGenerate(ldouble _sun_elevation, Tiff _band_red, Tiff _band_nir, Tiff _band_bqa){

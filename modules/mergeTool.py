@@ -39,10 +39,10 @@ def merge(path_list, merged_path, output_name="output"):
 	Takes paths of N distinct ndvi_tiff files, merge all of them
 	in a single big tiff and returns the path to this tiff
 	'''
-
+	
 	merged = True if (len(merged_path)) else False
 	alt = int(merged_path[-5]) if (merged) else 1
-	resulting_tiff_path = merged_path if(merged) else path_list[0]
+	resulting_tiff_path = merged_path if(merged || len(path_list) == 0) else path_list[0]
 
 	for i in xrange(int(not merged), len(path_list)):
 		alt ^= 1

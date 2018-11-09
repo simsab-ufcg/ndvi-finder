@@ -56,7 +56,7 @@ def calculate_ndvi(raster_path, output_path = "ndvi_scenes/", normalize_output_p
 	for scene in xrange(quant_scenes):
 		path_ndvi_scene, exit_code = ndvi(raster_path[scene*4], raster_path[scene*4+1], raster_path[scene*4+2], raster_path[scene*4+3], output_path + 'ndvi_scene_' + str(scene))
 
-		if (exit_code >> 8) == 2:
+		if (exit_code >> 8) == (2 << 3):
 			os.system('rm -rf ' + path_ndvi_scene)
 			path_ndvi_scene, exit_code = converter(raster_path[scene*4], raster_path[scene*4+1], raster_path[scene*4+2], raster_path[scene*4+3], output_path + 'ndvi_scene_' + str(scene))
 
