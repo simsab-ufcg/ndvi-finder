@@ -81,7 +81,7 @@ void MergeTiff::merge() {
                 }
             }
 
-            if( TIFFWriteScanline(output_base, write_line, j + offsetY) ) exit(4 << 3);
+            if( TIFFWriteScanline(output_base, write_line, j + offsetY) < 0 ) exit(4 << 3);
         }
 
         TIFFClose(output_read);
