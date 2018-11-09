@@ -5,7 +5,7 @@ def throwError(step, code):
 	'''
 
 	exit_code = (code >> 8)
-	signal_code = (511 & code)
+	signal_code = (255 & code)
 
 	switch = {
 		(1 << 3): 'Could not open TIFF file.',
