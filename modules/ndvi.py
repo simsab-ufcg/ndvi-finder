@@ -68,7 +68,7 @@ def calculate_ndvi(raster_path, output_path = "ndvi_scenes/", normalize_output_p
 			georeference.set_georeference(path_ndvi_scene, raster_path[scene*4], UL)
 
 			path_ndvi_normalize_scene = normalize_output_path + 'normalize_ndvi_scene_' + str(scene) + '.tif'
-			os.system('gdalwarp -overwrite -t_srs EPSG:32625 ' + path_ndvi_scene + ' ' + path_ndvi_normalize_scene + ' -dstnodata -nan')
+			os.system('gdalwarp -overwrite -t_srs EPSG:31984 ' + path_ndvi_scene + ' ' + path_ndvi_normalize_scene + ' -dstnodata -nan')
 			ndvis_path.append(path_ndvi_normalize_scene)
 		else:
 			errorHandler.throwError( 'Calculate NDVI', exit_code )
