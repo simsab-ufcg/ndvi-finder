@@ -2,8 +2,6 @@ import sys, os
 from modules import mergeTool, crop, ndvi, downloader
 
 def getPathRow(path, row):
-    if row < 100:
-        return str(path) + '0' + str(row)
     return str(path) + str(row)
 
 def main(regions, time_ranges, shape_files):
@@ -32,7 +30,7 @@ def main(regions, time_ranges, shape_files):
                 merged_ndvi_result = mergeTool.merge(ndvi_results, merged_ndvi_result)
                 os.system('rm backup_merge.tif')
                 os.system("cp " + merged_ndvi_result + " backup_merge.tif")
-            os.system("echo '' >semi-arid/" + region + '/' + pathrow + '/' + scene_id + '/.secretFlag')
+            os.system("echo '' >semi-arid/" + region + '/' + getPathRow(int(scene['path']), int(scene['row'])) + '/.secretFlag')
         
         sub_regions_raster += crop.crop ( merged_ndvi_result, shape_files[region] , region)
         os.system("echo '' >semi-arid/" + region + '/.secretFlag')
