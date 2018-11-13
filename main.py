@@ -28,7 +28,7 @@ def main(regions, time_ranges, shape_files):
             
             if ndvi_results:
                 merged_ndvi_result = mergeTool.merge(ndvi_results, merged_ndvi_result)
-                os.system('rm backup_merge.tif')
+                os.system('rm -rf backup_merge.tif')
                 os.system("cp " + merged_ndvi_result + " backup_merge.tif")
             os.system("echo '' >semi-arid/" + region + '/' + getPathRow(int(scene['path']), int(scene['row'])) + '/.secretFlag')
         
