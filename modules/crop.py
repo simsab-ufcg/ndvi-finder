@@ -1,10 +1,11 @@
 import os
 
-def crop(src_path, shape_path, output_name, output_path = 'crop_sub_regions/'):
+def crop(src_path, shape_path, output_name):
     '''
     Crops a tiff based on a shapefile, then returns the resulting tiff path.
     '''
 
+    output_path = 'crop_sub_regions/'
     os.system('mkdir -p ' + output_path)
 
     output_path_src_cropped = output_path + output_name + '.tif'

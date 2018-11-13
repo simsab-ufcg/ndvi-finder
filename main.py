@@ -11,6 +11,7 @@ def main(regions, time_ranges, shape_files):
     resume = False
     for region in regions:
         if os.path.isfile('semi-arid/' + region + '/.secretFlag'):
+            sub_regions_raster.append( 'crop_sub_regions/' + region + '.tif')
             resume = True
             continue
         merged_ndvi_result = ""
