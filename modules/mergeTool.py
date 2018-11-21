@@ -52,8 +52,8 @@ def merge(path_list, merged_path = "", output_name="output"):
 		if(exit_code >> 8) != 0:
 			errorHandler.throwError('merge', exit_code)
 
-	#for i in path_list:
-	#	os.system('rm -rf ' + i)
+	for i in path_list:
+		os.system('rm -rf ' + i)
 
 	os.system("rm -rf " + output_name + str(alt^1) + ".tif")
 	os.system("rm -rf aux.tif")

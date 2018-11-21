@@ -9,7 +9,7 @@ MergeTiff::MergeTiff(Tiff _input_base[2], string _output_base_name, Square _inpu
     output_square = _output_square;
     output_read_name = _output_read_name;
     
-    intersect = MergeMeanFunction();
+    intersect = MergePriorityFunction();
 }
 
 void MergeTiff::merge() {
@@ -76,7 +76,7 @@ void MergeTiff::merge() {
 
             for(register int k = 0; k < output_width; k++){
                 if(k >= offsetX && (k - offsetX) < input_width){
-                    ldouble pix = intersect(pixel_read_input.readPixel(k - offsetX), write_line[k]);
+                    ldouble pix = intersect(write_line[k], pixel_read_input.readPixel(k - offsetX));
                     write_line[k] = pix;
                 }
             }

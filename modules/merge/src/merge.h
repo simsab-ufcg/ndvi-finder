@@ -1,5 +1,6 @@
 #pragma once
-#include "mergeMeanFunction.h"
+#include "mergeFunction.h"
+#include "mergePriorityFunction.h"
 #include <unistd.h>
 
 struct MergeTiff{
@@ -9,7 +10,7 @@ struct MergeTiff{
     Square input_square[2];
     Square output_square;
 
-    MergeMeanFunction intersect;
+    MergePriorityFunction intersect;
 
     MergeTiff(Tiff _input_base[2], string _output_base_name, Square _input_square[2], Square _output_square, string _output_read_name);
 

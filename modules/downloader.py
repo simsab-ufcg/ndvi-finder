@@ -5,6 +5,7 @@ import csv
 import sys
 import os
 from pprint import pprint
+from modules import sort
 
 def get_processed_at_from_scene_id(scene_id):
   """
@@ -62,6 +63,7 @@ def parse_time_periods(filename):
       region_name_index = header.index('REGION_NAME')
       start_date_index = header.index('START_DATE')
       end_date_index = header.index('END_DATE')
+      start_pos_rain = header.index('START_POST_RAIN')
 
       for line in csv_reader:
         
@@ -69,6 +71,7 @@ def parse_time_periods(filename):
         parsed_data[id] = {}
         parsed_data[id]['start_date'] = ''.join(line[start_date_index].split(' '))
         parsed_data[id]['end_date'] = ''.join(line[end_date_index].split(' '))
+        parsed_data[id]['pos_rain'] = int(line[start_pos_rain])
   except IOError:
     print "Time_periods file not found. Make sure you are using correct path."
     raise SystemExit
@@ -82,14 +85,15 @@ def is_valid_product(scene_id, start_date, end_date):
     is_valid = False
   if(end_date and processed_at > end_date):
     is_valid = False
-  if(scene_id[2] != '8' and scene_id[2] != '7' and scene_id[2] != '5' and scene_id[2] != '4'):
+  if(scene_id[2] != '8' and scene_id[2] != '5'):
     is_valid = False
+    
   # # only T1 images
   # if(scene_id[-1] != '1'):
   #   is_valid = False
   return is_valid
 
-def build_product_obj(scene_id, start_date, end_date, download_url, cloud_cover):
+def build_product_obj(scene_id, start_date, end_date, download_url, cloud_cover, order_id):
   if(is_valid_product(scene_id, start_date, end_date)):
     product_obj = {}
     product_obj['scene_id'] = scene_id
@@ -98,6 +102,7 @@ def build_product_obj(scene_id, start_date, end_date, download_url, cloud_cover)
     product_obj['download_url'] = download_url
     product_obj['processed_at'] = get_processed_at_from_scene_id(scene_id)
     product_obj['cloud_cover'] = cloud_cover
+    product_obj['order_id'] = order_id
     return product_obj
   else:
     return None
@@ -106,7 +111,7 @@ DIR = os.path.dirname(os.path.abspath(__file__))
 def setup(ulx = 214, uly = 61, brx = 223, bry = 74):
   subprocess.call(['sh', DIR + '/downloader/downloader.sh', str(ulx), str(uly), str(brx), str(bry)])
 
-def search(path, row, start_date = None, end_date = None):
+def search(path, row, start_date = None, end_date = None, start_pos_rain = None):
   products = []
   try:
     with open('scene_list') as csvfile:
@@ -125,7 +130,7 @@ def search(path, row, start_date = None, end_date = None):
           scene_id = product[scene_id_index]
           download_url = product[download_url_index]
           cloud_cover = float(product[cloud_cover_index])
-          product_obj = build_product_obj(scene_id, start_date, end_date, download_url, cloud_cover)
+          product_obj = build_product_obj(scene_id, start_date, end_date, download_url, cloud_cover, sort.criteria(scene_id, start_pos_rain))
 
           if(product_obj): 
             products.append(product_obj)
