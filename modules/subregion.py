@@ -24,7 +24,7 @@ def process(region, time_range, shape_files, scenes):
             path_row_raster.append(ndvi_final_output)
             continue
 
-        scenes_raster = downloader.search(scene['path'], scene['row'], time_range['start_date'], time_ranges['end_date'], time_ranges['pos_rain'])
+        scenes_raster = downloader.search(scene['path'], scene['row'], time_range['start_date'], time_range['end_date'], time_range['pos_rain'])
         sorted_scenes_raster = sort.sort(scenes_raster)
         raster_paths = downloader.download_scene(sorted_scenes_raster, region_path)
         ndvi_result = ndvi.calculate_ndvi(raster_paths)
@@ -44,7 +44,7 @@ def process(region, time_range, shape_files, scenes):
 
 if __name__ == '__main__':
     this_region = sys.argv[1]
-    regions = downloader.parse_path_and_rows('../samples/semi-arid/path_row.txt')
-    time_ranges = downloader.parse_time_periods('../samples/semi-arid/time_range.csv')
-    shape_files = downloader.get_shape_files(regions, '../samples/semi-arid/')
-    main(this_region, time_ranges[this_region], shape_files[this_region], regions[this_region])
+    regions = downloader.parse_path_and_rows('samples/semi-arid/path_row.txt')
+    time_ranges = downloader.parse_time_periods('samples/semi-arid/time_range.csv')
+    shape_files = downloader.get_shape_files(regions, 'samples/semi-arid/')
+    process(this_region, time_ranges[this_region], shape_files[this_region], regions[this_region])

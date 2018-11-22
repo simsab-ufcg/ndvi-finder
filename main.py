@@ -4,7 +4,7 @@ from modules import mergeTool, crop, ndvi, downloader, sort, subregion
 def getPathRow(path, row):
     return str(path) + str(row)
 
-def main(regions, time_ranges, shape_files):
+def main(regions):
     sub_regions_raster = []
     subprocesses = []
     resume = False
@@ -12,8 +12,9 @@ def main(regions, time_ranges, shape_files):
 
         print 'Processing ' + region + ' subregion.'
         sub_regions_raster.append('crop_sub_regions/' + region + '.tif')
+        FNULL = open(os.devnull, 'w')
         subprocesses.append((subprocess.Popen(' '.join(['python', 'subregion.py', region]), 
-          shell=True, stdout=FNULL, stderr=FNULL)), region)
+          shell=True, stdout=FNULL, stderr=FNULL), region))
 
     for subprocesse, region in subprocesses:
         print 'Finish ' + region + 'subregion.'

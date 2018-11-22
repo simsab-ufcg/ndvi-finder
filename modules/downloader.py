@@ -5,7 +5,7 @@ import csv
 import sys
 import os
 from pprint import pprint
-from modules import sort
+import sort
 
 def get_processed_at_from_scene_id(scene_id):
   """
