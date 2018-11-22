@@ -68,7 +68,7 @@ def bestMerge(path_list, merged_path = ""):
 		os.system("mv " + result + " " + path_list[0])
 		return [path_list[0]]
 	else:
-		m = len(path_list/2)
+		m = len(path_list)/2
 		result = merge( bestMerge(path_list[:m], merged_path) + bestMerge(path_list[m:], merged_path), merged_path)
 		os.system("mv " + result + " " + path_list[0])
 		return [path_list[0]]
