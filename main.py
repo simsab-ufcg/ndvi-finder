@@ -25,7 +25,7 @@ def main(regions, time_ranges, shape_files):
             scenes_raster = downloader.search(scene['path'], scene['row'], time_ranges[region]['start_date'], time_ranges[region]['end_date'], time_ranges[region]['pos_rain'])
             sorted_scenes_raster = sort.sort(scenes_raster)
             raster_paths = downloader.download_scene(sorted_scenes_raster, 'semi-arid/' + region + '/')
-            ndvi_results, ndvi_utils = ndvi.calculate_ndvi(raster_paths)
+            ndvi_results = ndvi.calculate_ndvi(raster_paths)
             
             if ndvi_results:
                 merged_ndvi_result = mergeTool.merge(ndvi_results, merged_ndvi_result)
@@ -33,7 +33,7 @@ def main(regions, time_ranges, shape_files):
                 os.system("cp " + merged_ndvi_result + " backup_merge.tif")
             os.system("echo '' >semi-arid/" + region + '/' + getPathRow(int(scene['path']), int(scene['row'])) + '/.secretFlag')
             
-        sub_regions_raster += crop.crop ( merged_ndvi_result, shape_files[region] , region)
+        sub_regions_raster.append( crop.crop ( merged_ndvi_result, shape_files[region] , region) )
         os.system("echo '' >semi-arid/" + region + '/.secretFlag')
 
     mergeTool.merge( sub_regions_raster )
