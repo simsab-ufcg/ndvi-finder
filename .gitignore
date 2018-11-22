@@ -6,3 +6,5 @@ run
 log*
 index.csv
 LOG*
+.secretFlag
+.vscode/
