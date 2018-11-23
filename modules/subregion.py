@@ -27,7 +27,7 @@ def process(region, time_range, shape_files, scenes):
         scenes_raster = downloader.search(scene['path'], scene['row'], time_range['start_date'], time_range['end_date'], time_range['pos_rain'])
         sorted_scenes_raster = sort.sort(scenes_raster)
         raster_paths = downloader.download_scene(sorted_scenes_raster, region_path)
-        ndvi_results = ndvi.calculate_ndvi(raster_paths, , region_path + 'ndvi_scenes/', region_path + 'ndvi_scenes_normalize/')
+        ndvi_results = ndvi.calculate_ndvi(raster_paths, region_path + 'ndvi_scenes/', region_path + 'ndvi_scenes_normalize/')
         
         if ndvi_results:
             merged_ndvi_result = mergeTool.merge(ndvi_results, merged_ndvi_result, region_path + getPathRow(int(scene['path']), int(scene['row'])) + '/output')
