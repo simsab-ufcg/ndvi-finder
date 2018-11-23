@@ -64,11 +64,12 @@ int main(int argc, char *argv[]){
     const int INPUT_COORD_VALUES[2][2] = {{2, 3}, {5, 6}};
 
     const int OUTPUT_BASE_INDEX = 7;
+    const int AUX_NAME = 8;
 
-    const string AUX_TIF = "aux.tif";
+    const string AUX_TIF = string(argv[AUX_NAME]);
 
     // valid arguments
-    if(argc != 8){
+    if(argc != 9){
         cerr << "Arguments insufficients\n";
         exit(0);
     }

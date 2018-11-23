@@ -13,12 +13,12 @@ def main(regions):
         print 'Processing ' + region + ' subregion.'
         sub_regions_raster.append('crop_sub_regions/' + region + '.tif')
         FNULL = open(os.devnull, 'w')
-        subprocesses.append((subprocess.Popen(' '.join(['python', 'subregion.py', region]), 
+        subprocesses.append((subprocess.Popen(' '.join(['python', 'modules/subregion.py', region]), 
           shell=True, stdout=FNULL, stderr=FNULL), region))
 
     for subprocesse, region in subprocesses:
-        print 'Finish ' + region + 'subregion.'
         subprocesse.wait()
+        print 'Finish ' + region + 'subregion.'
 
     mergeTool.merge( sub_regions_raster, "", "NDVI_FINAL")
 

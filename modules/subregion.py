@@ -30,14 +30,14 @@ def process(region, time_range, shape_files, scenes):
         ndvi_results = ndvi.calculate_ndvi(raster_paths, region_path + 'ndvi_scenes/', region_path + 'ndvi_scenes_normalize/')
         
         if ndvi_results:
-            merged_ndvi_result = mergeTool.merge(ndvi_results, merged_ndvi_result, region_path + getPathRow(int(scene['path']), int(scene['row'])) + '/output')
+            merged_ndvi_result = mergeTool.merge(ndvi_results, merged_ndvi_result, region_path + getPathRow(int(scene['path']), int(scene['row'])) + '/output', region_path)
             os.system(' '.join(['mv', merged_ndvi_result, ndvi_final_output]))
             path_row_raster.append(ndvi_final_output)
 
         os.system("echo '' >"+ region_path + getPathRow(int(scene['path']), int(scene['row'])) + '/.secretFlag')
 
     os.system(' '.join(['mkdir', region_path + 'bestMerge/']))
-    merged_ndvi_result = mergeTool.bestMerge(path_row_raster, "", region_path + 'bestMerge/T')[0]
+    merged_ndvi_result = mergeTool.bestMerge(path_row_raster, "", region_path + 'bestMerge/T', region_path)[0]
     sub_region_raster = crop.crop ( merged_ndvi_result, shape_files , region)
     os.system("echo '' >semi-arid/" + region + '/.secretFlag')
 
