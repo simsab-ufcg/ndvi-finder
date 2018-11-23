@@ -36,7 +36,8 @@ def process(region, time_range, shape_files, scenes):
 
         os.system("echo '' >"+ region_path + getPathRow(int(scene['path']), int(scene['row'])) + '/.secretFlag')
 
-    merged_ndvi_result = mergeTool.bestMerge(path_row_raster, "", region_path + 'bestMerge/')[0]
+    os.system(' '.join(['mkdir', region_path + 'bestMerge/']))
+    merged_ndvi_result = mergeTool.bestMerge(path_row_raster, "", region_path + 'bestMerge/T')[0]
     sub_region_raster = crop.crop ( merged_ndvi_result, shape_files , region)
     os.system("echo '' >semi-arid/" + region + '/.secretFlag')
 
