@@ -78,5 +78,16 @@ def calculate_ndvi(raster_path, output_path = "ndvi_scenes/", normalize_output_p
 
 	os.system('rm -rf ' + output_path)
 
-	return ndvis_path
+	real_ndvis_path = []
+
+	for ndvi_path in ndvis_path:
+		bread = ndvi_path.split('/')
+		bread[-1] = 'n' + bread[-1]
+		real_ndvi_path = '/'.join(bread)
+		cmd = 'gdal_merge.py ' + ndvi_path + ' -o ' + real_ndvi_path + ' -ps 30 30'
+		print cmd
+		os.system(cmd)
+		real_ndvis_path.append(real_ndvi_path)
+
+	return real_ndvis_path
 

@@ -13,8 +13,8 @@ using Tiff = TIFF*;
 
 const ldouble EPS = 1e-7;
 const ldouble NaN = -sqrt(-1.0);
-const ldouble pixelWidth = 29.996139493;
-const ldouble pixelHeight = 29.996139493;
+const ldouble pixelWidth = 30;
+const ldouble pixelHeight = 30;
 
 typedef struct Point{
 	ldouble x, y;
