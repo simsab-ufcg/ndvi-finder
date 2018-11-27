@@ -88,7 +88,8 @@ void NDVIGenerate::landsat(Tiff ndvi, int width_band, int height_band, int mask,
         //ReflectanceCalc
         for(int col = 0; col < width_band; col++){
             ldouble pixel_band_bqa = pixel_read_band_bqa.readPixel(col);
-            if(fabs(pixel_band_bqa - mask) > EPS){
+            if(fabs(pixel_band_bqa - mask) > EPS &&
+               fabs(pixel_band_bqa - 20480) > EPS){
                 line_ndvi[col] = NaN;
                 continue;
             }
@@ -129,7 +130,8 @@ void NDVIGenerate::landsat(Tiff ndvi, int width_band, int height_band, int mask)
 
         for(int col = 0; col < width_band; col++){
             ldouble pixel_band_bqa = pixel_read_band_bqa.readPixel(col);
-            if(fabs(pixel_band_bqa - mask) > EPS){
+            if(fabs(pixel_band_bqa - mask) > EPS &&
+               fabs(pixel_band_bqa - 20480) > EPS){
                 line_ndvi[col] = NaN;
                 continue;
             }
