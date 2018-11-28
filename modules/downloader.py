@@ -8,18 +8,28 @@ from pprint import pprint
 import sort
 
 def get_processed_at_from_scene_id(scene_id):
-  """
-    Ex: LC8 214 063 2013241 LGN02
-  """
+  '''
+  Take year and julian day of scene id.
+  '''
   return scene_id[9:16]
 
 def get_path_from_scene_id(scene_id):
+  '''
+  Take path of scene id.
+  '''
   return int(scene_id[3:6])
 
 def get_row_from_scene_id(scene_id):
+  '''
+  Take row of scene id.
+  '''
   return int(scene_id[6:9])
 
 def parse_path_and_rows(filename):
+  '''
+  Takes for each region all the path/rows used in its contruction and returns.
+  '''
+
   parsed_data = {}
   try:
     with open(filename) as open_file:
@@ -38,21 +48,14 @@ def parse_path_and_rows(filename):
     print "Path_and_rows file not found. Make sure you are using correct path."
     raise SystemExit
 
-  
-  # obj = {}
-  # nn = 0
-  # for parse in parsed_data.values():
-  #   for nobj in parse:
-  #     if(not obj.has_key(nobj['path'])):
-  #       obj[nobj['path']] = {}
-  #     if(not obj[nobj['path']].has_key(nobj['row'])):
-  #       obj[nobj['path']][nobj['row']] = True
-  #       nn += 1
-  
-  # print nn
   return parsed_data
 
 def parse_time_periods(filename):
+  '''
+  Takes for each region the beginning and end of the analysis period
+  together with the beginning of the respective rainy season and returns.
+  '''
+
   parsed_data = {}
   try:
     with open(filename) as csvfile:
@@ -79,6 +82,11 @@ def parse_time_periods(filename):
   return parsed_data 
 
 def is_valid_product(scene_id, start_date, end_date):
+  '''
+  Checks whether the scene ID is an L5 or L7 image
+  and belongs to the respective start and end intervals.
+  '''
+
   is_valid = True
   processed_at = get_processed_at_from_scene_id(scene_id)
   if(start_date and processed_at < start_date):
@@ -88,12 +96,12 @@ def is_valid_product(scene_id, start_date, end_date):
   if(scene_id[2] != '8' and scene_id[2] != '5'):
     is_valid = False
     
-  # # only T1 images
-  # if(scene_id[-1] != '1'):
-  #   is_valid = False
   return is_valid
 
 def build_product_obj(scene_id, start_date, end_date, download_url, cloud_cover, order_id):
+  '''
+  Builds a scene product and returns.
+  '''
   if(is_valid_product(scene_id, start_date, end_date)):
     product_obj = {}
     product_obj['scene_id'] = scene_id
@@ -109,9 +117,16 @@ def build_product_obj(scene_id, start_date, end_date, download_url, cloud_cover,
 
 DIR = os.path.dirname(os.path.abspath(__file__))
 def setup(ulx = 214, uly = 61, brx = 223, bry = 74):
+  '''
+  Download all informations used in main execution.
+  '''
   subprocess.call(['sh', DIR + '/downloader/downloader.sh', str(ulx), str(uly), str(brx), str(bry)])
 
 def search(path, row, start_date = None, end_date = None, start_pos_rain = None):
+  '''
+  Take each product in the scenes list, store everything
+  with path/row and date range and return.
+  '''
   products = []
   try:
     with open('scene_list') as csvfile:
@@ -140,14 +155,11 @@ def search(path, row, start_date = None, end_date = None, start_pos_rain = None)
 
   return products
 
-"""
-  query = {
-    path {
-      Set(row)
-    }
-  }
-"""
 def batch_search(query, start_date=None, end_date=None):
+  '''
+  For each query, returns all the scene product information contained in thedefined time interval. 
+  '''
+
   result = {}
   paths = query.keys()
   for path in paths:
@@ -193,9 +205,10 @@ def batch_search(query, start_date=None, end_date=None):
 
   return result
 
-
-
 def download_scene(scenes, output_directory):
+  '''
+  Take all the scenes and download it by storing it in output directory.
+  '''
   subprocesses = []
   paths = []
   for scene in scenes:
@@ -231,6 +244,9 @@ def download_scene(scenes, output_directory):
   return paths
 
 def get_scenes(path_and_rows, start_date, end_date):
+  '''
+  Take for each path/row all scenes in date range e returns
+  '''
   path_and_rows_obj = {}
   for pr_obj in path_and_rows:
     if(path_and_rows_obj.has_key(pr_obj['path'])):
@@ -241,6 +257,10 @@ def get_scenes(path_and_rows, start_date, end_date):
   return batch_search(path_and_rows_obj, start_date, end_date)
 
 def info(path_and_rows_file, time_periods):
+  '''
+  Take for each path/row print all informations of scenes in time range.
+  '''
+
   ids = path_and_rows_file.keys()
   print 'region,path,row,scene_id,cloud_cover,download_url'
   for id in ids:
@@ -263,6 +283,9 @@ def info(path_and_rows_file, time_periods):
           print ','.join([id, str(path), str(row), 'NOT FOUND', 'NOT FOUND', 'NOT FOUND'])
 
 def get_shape_files(path_and_rows, directory_sample):
+  '''
+  Gets all shapefiles in the respective regions and returns.
+  '''
   ids = path_and_rows.keys()
   shps = {}
   for id in ids:
@@ -270,8 +293,11 @@ def get_shape_files(path_and_rows, directory_sample):
     shps[id] = shp
   return shps
 
-
 def download(path_and_rows, time_periods, output_directory):
+  '''
+  Take for each path/row in the period time range, download and store in the output directory.
+  '''
+
   ids = path_and_rows.keys()
   for id in ids:
     start_date = time_periods[id]['start_date']
@@ -287,12 +313,9 @@ def download(path_and_rows, time_periods, output_directory):
   
 
 if __name__ == '__main__':
-  # if(len(sys.argv) != 4):
-  #   print('Incorrect number of arguments')
-  #   exit()
   command = sys.argv[1]
   if command == 'setup':
-    if(len(sys.argv) == 6):
+    if len(sys.argv) == 6:
       ulx = int(sys.argv[2])
       uly = int(sys.argv[3])
       brx = int(sys.argv[4])
