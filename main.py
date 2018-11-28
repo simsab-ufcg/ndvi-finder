@@ -2,6 +2,9 @@ import sys, os, subprocess
 from modules import mergeTool, crop, ndvi, downloader, sort, subregion
 
 def getPathRow(path, row):
+    '''
+    Return path/row in string format.
+    '''
     return str(path) + str(row)
 
 def main(regions):
@@ -9,7 +12,6 @@ def main(regions):
     subprocesses = []
     resume = False
     for region in regions:
-
         print 'Processing ' + region + ' subregion.'
         sub_regions_raster.append('crop_sub_regions/' + region + '.tif')
         FNULL = open(os.devnull, 'w')
