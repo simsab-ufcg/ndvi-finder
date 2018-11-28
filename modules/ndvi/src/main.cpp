@@ -3,7 +3,6 @@
 #include <unistd.h>
 #include <string.h>
 #include "read_meta.h"
-//#include "read_sun_earth.h"
 #include "ndvi_generate.h"
 #include "utils.h"
 
@@ -87,13 +86,6 @@ int main(int argc, char *argv[]){
     ldouble sun_elevation = reader_meta.getSunElevation();
     ldouble dist_sun_earth = reader_meta.getDistEarthSun();
     int number_sensor = reader_meta.getNumberSensor();
-    //int julian_day = reader_meta.getJulianDay();
-    //int year = reader_meta.getYear();
-
-    //load distance between sun and earth
-    //string path_d_sun_earth = "./src/d_sun_earth";
-    //ReadSunEarth reader_sun_earth = ReadSunEarth(path_d_sun_earth);
-    //ldouble dist_sun_earth = reader_sun_earth.getDistance(julian_day);
 
     //load band red (tiff)
     string path_tiff_band_red = argv[INPUT_BAND_RED_INDEX];
