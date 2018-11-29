@@ -155,7 +155,7 @@ def search(path, row, start_date = None, end_date = None, start_pos_rain = None)
 
   return products
 
-def batch_search(query, start_date=None, end_date=None):
+def batch_search(query, start_date=None, end_date=None, start_pos_rain=None):
   '''
   For each query, returns all the scene product information contained in thedefined time interval. 
   '''
@@ -187,7 +187,7 @@ def batch_search(query, start_date=None, end_date=None):
         download_url = product[download_url_index]
         cloud_cover = float(product[cloud_cover_index])
 
-        product_obj = build_product_obj(scene_id, start_date, end_date, download_url, cloud_cover)
+        product_obj = build_product_obj(scene_id, start_date, end_date, download_url, cloud_cover, sort.criteria(scene_id, start_pos_rain))
 
         if(product_obj):
           processed_at = get_processed_at_from_scene_id(scene_id)
@@ -243,7 +243,7 @@ def download_scene(scenes, output_directory):
     print scene_id + ' downloaded'
   return paths
 
-def get_scenes(path_and_rows, start_date, end_date):
+def get_scenes(path_and_rows, start_date, end_date, pos_rain):
   '''
   Take for each path/row all scenes in date range e returns
   '''
@@ -254,7 +254,7 @@ def get_scenes(path_and_rows, start_date, end_date):
     else:
       path_and_rows_obj[pr_obj['path']] = set([pr_obj['row']])
 
-  return batch_search(path_and_rows_obj, start_date, end_date)
+  return batch_search(path_and_rows_obj, start_date, end_date, pos_rain)
 
 def info(path_and_rows_file, time_periods):
   '''
@@ -262,12 +262,13 @@ def info(path_and_rows_file, time_periods):
   '''
 
   ids = path_and_rows_file.keys()
-  print 'region,path,row,scene_id,cloud_cover,download_url'
+  print 'region,path,row,scene_id,cloud_cover'#,download_url'
   for id in ids:
     start_date = time_periods[id]['start_date']
     end_date = time_periods[id]['end_date']
+    pos_rain = time_periods[id]['pos_rain']
 
-    scenes = get_scenes(path_and_rows[id], start_date, end_date)
+    scenes = get_scenes(path_and_rows[id], start_date, end_date, pos_rain)
 
     paths = scenes.keys()
     for path in paths:
@@ -278,7 +279,7 @@ def info(path_and_rows_file, time_periods):
           cloud_cover_loc.append(scene['cloud_cover'])
         cloud_cover_loc.sort()
         for scene in scenes[path][row]:
-          print ','.join([id, str(path), str(row), scene['scene_id'], str(scene['cloud_cover']), scene['download_url']])
+          print ','.join([id, str(path), str(row), scene['scene_id'], str(scene['cloud_cover'])])
         if len(scenes[path][row]) == 0:
           print ','.join([id, str(path), str(row), 'NOT FOUND', 'NOT FOUND', 'NOT FOUND'])
 
@@ -302,8 +303,9 @@ def download(path_and_rows, time_periods, output_directory):
   for id in ids:
     start_date = time_periods[id]['start_date']
     end_date = time_periods[id]['end_date']
+    pos_rain = time_periods[id]['pos_rain']
 
-    scenes = get_scenes(path_and_rows[id], start_date, end_date)
+    scenes = get_scenes(path_and_rows[id], start_date, end_date, pos_rain)
 
     paths = scenes.keys()
     for path in paths:
