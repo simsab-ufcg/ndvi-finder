@@ -13,6 +13,18 @@ def get_processed_at_from_scene_id(scene_id):
   '''
   return scene_id[9:16]
 
+def get_end_rainy_season_from_scene_id(start_pos_rain):
+  '''
+  Take year and julian day of scene id.
+  '''
+  end_rainy_season = str(int(start_pos_rain[4:7]) - 1)
+  year_rainy_season = start_pos_rain[0:4]
+  
+  if len(end_rainy_season) == 2:
+    end_rainy_season = '0' + end_rainy_season
+  
+  return year_rainy_season + end_rainy_season
+
 def get_path_from_scene_id(scene_id):
   '''
   Take path of scene id.
@@ -66,7 +78,7 @@ def parse_time_periods(filename):
       region_name_index = header.index('REGION_NAME')
       start_date_index = header.index('START_DATE')
       end_date_index = header.index('END_DATE')
-      start_pos_rain = header.index('START_POST_RAIN')
+      start_post_rain = header.index('START_POST_RAIN')
 
       for line in csv_reader:
         
@@ -74,7 +86,8 @@ def parse_time_periods(filename):
         parsed_data[id] = {}
         parsed_data[id]['start_date'] = ''.join(line[start_date_index].split(' '))
         parsed_data[id]['end_date'] = ''.join(line[end_date_index].split(' '))
-        parsed_data[id]['pos_rain'] = int(line[start_pos_rain])
+        parsed_data[id]['post_rain'] = ''.join(line[start_post_rain].split(' '))        
+        parsed_data[id]['end_rainy_season'] = get_end_rainy_season_from_scene_id(parsed_data[id]['post_rain'])
   except IOError:
     print "Time_periods file not found. Make sure you are using correct path."
     raise SystemExit
@@ -122,7 +135,7 @@ def setup(ulx = 214, uly = 61, brx = 223, bry = 74):
   '''
   subprocess.call(['sh', DIR + '/downloader/downloader.sh', str(ulx), str(uly), str(brx), str(bry)])
 
-def search(path, row, start_date = None, end_date = None, start_pos_rain = None):
+def search(path, row, start_date = None, end_date = None):
   '''
   Take each product in the scenes list, store everything
   with path/row and date range and return.
@@ -145,7 +158,7 @@ def search(path, row, start_date = None, end_date = None, start_pos_rain = None)
           scene_id = product[scene_id_index]
           download_url = product[download_url_index]
           cloud_cover = float(product[cloud_cover_index])
-          product_obj = build_product_obj(scene_id, start_date, end_date, download_url, cloud_cover, sort.criteria(scene_id, start_pos_rain))
+          product_obj = build_product_obj(scene_id, start_date, end_date, download_url, cloud_cover, sort.criteria(scene_id))
 
           if(product_obj): 
             products.append(product_obj)
@@ -155,7 +168,7 @@ def search(path, row, start_date = None, end_date = None, start_pos_rain = None)
 
   return products
 
-def batch_search(query, start_date=None, end_date=None, start_pos_rain=None):
+def batch_search(query, start_date=None, end_date=None, start_post_rain=None):
   '''
   For each query, returns all the scene product information contained in thedefined time interval. 
   '''
@@ -187,7 +200,7 @@ def batch_search(query, start_date=None, end_date=None, start_pos_rain=None):
         download_url = product[download_url_index]
         cloud_cover = float(product[cloud_cover_index])
 
-        product_obj = build_product_obj(scene_id, start_date, end_date, download_url, cloud_cover, sort.criteria(scene_id, start_pos_rain))
+        product_obj = build_product_obj(scene_id, start_date, end_date, download_url, cloud_cover, sort.criteria(scene_id))
 
         if(product_obj):
           processed_at = get_processed_at_from_scene_id(scene_id)
@@ -243,7 +256,7 @@ def download_scene(scenes, output_directory):
     print scene_id + ' downloaded'
   return paths
 
-def get_scenes(path_and_rows, start_date, end_date, pos_rain):
+def get_scenes(path_and_rows, start_date, end_date, post_rain):
   '''
   Take for each path/row all scenes in date range e returns
   '''
@@ -254,7 +267,7 @@ def get_scenes(path_and_rows, start_date, end_date, pos_rain):
     else:
       path_and_rows_obj[pr_obj['path']] = set([pr_obj['row']])
 
-  return batch_search(path_and_rows_obj, start_date, end_date, pos_rain)
+  return batch_search(path_and_rows_obj, start_date, end_date, post_rain)
 
 def info(path_and_rows_file, time_periods):
   '''
@@ -266,9 +279,9 @@ def info(path_and_rows_file, time_periods):
   for id in ids:
     start_date = time_periods[id]['start_date']
     end_date = time_periods[id]['end_date']
-    pos_rain = time_periods[id]['pos_rain']
+    post_rain = time_periods[id]['post_rain']
 
-    scenes = get_scenes(path_and_rows[id], start_date, end_date, pos_rain)
+    scenes = get_scenes(path_and_rows[id], start_date, end_date, post_rain)
 
     paths = scenes.keys()
     for path in paths:
@@ -303,9 +316,9 @@ def download(path_and_rows, time_periods, output_directory):
   for id in ids:
     start_date = time_periods[id]['start_date']
     end_date = time_periods[id]['end_date']
-    pos_rain = time_periods[id]['pos_rain']
+    post_rain = time_periods[id]['post_rain']
 
-    scenes = get_scenes(path_and_rows[id], start_date, end_date, pos_rain)
+    scenes = get_scenes(path_and_rows[id], start_date, end_date, post_rain)
 
     paths = scenes.keys()
     for path in paths:

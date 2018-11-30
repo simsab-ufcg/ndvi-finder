@@ -24,8 +24,14 @@ def process(region, time_range, shape_files, scenes):
             path_row_raster.append(ndvi_final_output)
             continue
 
-        scenes_raster = downloader.search(scene['path'], scene['row'], time_range['start_date'], time_range['end_date'], time_range['pos_rain'])
-        sorted_scenes_raster = sort.sort(scenes_raster)
+        rainy_season_scenes_raster = downloader.search(scene['path'], scene['row'], time_range['start_date'], time_range['end_rainy_season'])
+        post_rain_scenes_raster = downloader.search(scene['path'], scene['row'], time_range['post_rain'], time_range['end_date'])
+
+        sorted_rainy_season_scenes_raster = sort.sort(rainy_season_scenes_raster)
+        sorted_post_rain_scenes_raster = sort.sort(post_rain_scenes_raster, True)
+    
+        sorted_scenes_raster = sorted_rainy_season_scenes_raster + sorted_post_rain_scenes_raster
+
         raster_paths = downloader.download_scene(sorted_scenes_raster, region_path)
         ndvi_results = ndvi.calculate_ndvi(raster_paths, region_path + 'ndvi_scenes/', region_path + 'ndvi_scenes_normalize/')
         
