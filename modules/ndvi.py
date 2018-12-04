@@ -84,7 +84,7 @@ def calculate_ndvi(raster_path, output_path = "ndvi_scenes/", normalize_output_p
 		bread = ndvi_path.split('/')
 		bread[-1] = 'n' + bread[-1]
 		real_ndvi_path = '/'.join(bread)
-		cmd = 'gdalwarp -tr 30 30 ' + ndvi_path + ' ' + real_ndvi_path
+		cmd = 'gdalwarp -tr 30 30 ' + ndvi_path + ' ' + real_ndvi_path + ' -dstnodata -nan'
 		os.system(cmd)
 		os.system('rm -rf ' + ndvi_path)
 		real_ndvis_path.append(real_ndvi_path)
