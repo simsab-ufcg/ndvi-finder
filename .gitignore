@@ -1,0 +1,10 @@
+scene_list
+output
+run
+*.pyc
+*.tif
+log*
+index.csv
+LOG*
+.secretFlag
+.vscode/
