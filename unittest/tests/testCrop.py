@@ -1,13 +1,6 @@
-import unittest
 
-class TestCrop(unittest.TestCase):
-
-    def setUp(self):
-        # define inputs and outputs
-        pass
-
-    def test_crop_01(self):
-        pass
+def set_up():
+    return
 
 if __name__ == '__main__':
-    unittest.main()
+    set_up()

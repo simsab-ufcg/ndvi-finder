@@ -2,7 +2,7 @@ scene_list
 output
 run
 *.pyc
-*.tif
+samples/*.tif
 log*
 index.csv
 LOG*
