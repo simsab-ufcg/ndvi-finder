@@ -1,10 +1,6 @@
 import os
-import filecmp
 
 separator = ' '
-
-def compare_tiffs(tiff1, tiff2):
-    return not filecmp.cmp(tiff1, tiff2)
 
 def verify_result(exit_code):
     if exit_code != 0:

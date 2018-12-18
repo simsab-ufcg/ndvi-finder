@@ -1,4 +1,5 @@
 from modules import utils as ut
+from modules import compare as comp
 
 def set_up():
     inputs = {
@@ -26,7 +27,7 @@ def test_crop(inputs, outputs, tests):
         exit_code = ut.run_crop(inputs[test])
         ut.verify_result(exit_code)
 
-        exit_code = ut.compare_tiffs(outputs[test], inputs[test][2])
+        exit_code = comp.compare_tiffs(outputs[test], inputs[test][2])
         ut.verify_result(exit_code)
 
         ut.remove_file(inputs[test][2])
