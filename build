@@ -1,0 +1,13 @@
+#!/bin/bash
+
+python main.py setup
+
+WORKSPACE=`pwd`
+
+cd $WORKSPACE/modules/merge
+make clean
+make
+
+cd $WORKSPACE/modules/ndvi
+make clean
+make
