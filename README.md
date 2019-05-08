@@ -32,7 +32,7 @@ Observação: As configurações presentes no código estão corretas para calcu
 Para executar o projeto, use o seguinte comando:
 
 ```
-python main.py run
+    python main.py run
 ```
 
 # Informação adicional
