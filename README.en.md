@@ -32,7 +32,7 @@ Note: The configurations present in the code are correct to calculate the NDVI o
 To run the project use the following command:
 
 ```
-python main.py run
+    python main.py run
 ```
 
 # Additional Information
