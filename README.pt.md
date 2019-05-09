@@ -3,7 +3,7 @@ Este projeto visa produzir um produto NDVI composto por várias cenas que podem 
 
 Observação: É possível fazer modificações para que você possa gerar o NDVI para áreas fora do território semi-árido.
 
-*Leia isto em outros idiomas: [Português](README.md), [Inglês](README.en.md)*
+*Leia isto em outros idiomas: [Inglês](README.md), [Português](README.pt.md)*
 
 # Construindo projeto
 Para construir este projeto, execute o script *build* usando o seguinte código.
