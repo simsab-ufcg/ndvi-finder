@@ -3,7 +3,7 @@ This project aims to produce a product of NDVI composed of several landsat scene
 
 Note: It is possible to make modifications so that you can generate NDVI for areas outside the semi-arid territory.
 
-*Read this in other languages: [Português](README.md), [English](README.en.md)*
+*Read this in other languages: [English](README.md), [Português](README.pt.md)*
 
 # Build
 For build this project execute script build using following code.
