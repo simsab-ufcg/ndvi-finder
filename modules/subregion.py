@@ -9,7 +9,7 @@ def process(region, time_range, shape_files, scenes):
     
     path_row_raster = []
     #region_path = 'semi-arid/' + region + '/'
-    region_path = 'teste/' + region + '/'
+    region_path = 'serido/' + region + '/'
 
 
     if os.path.isfile(region_path + '.secretFlag'):
@@ -46,13 +46,13 @@ def process(region, time_range, shape_files, scenes):
     os.system(' '.join(['mkdir', region_path + 'bestMerge/']))
     merged_ndvi_result = mergeTool.bestMerge(path_row_raster, "", region_path + 'bestMerge/T', region_path)[0]
     sub_region_raster = crop.crop ( merged_ndvi_result, shape_files , region)
-    os.system("echo '' >teste/" + region + '/.secretFlag')
+    os.system("echo '' >serido/" + region + '/.secretFlag')
 
     return
 
 if __name__ == '__main__':
     this_region = sys.argv[1]
-    regions = downloader.parse_path_and_rows('samples/small/path_row.txt')
-    time_ranges = downloader.parse_time_periods('samples/small/time_range.csv')
-    shape_files = downloader.get_shape_files(regions, 'samples/small/')
+    regions = downloader.parse_path_and_rows('samples/serido/path_row.txt')
+    time_ranges = downloader.parse_time_periods('samples/serido/time_range.csv')
+    shape_files = downloader.get_shape_files(regions, 'samples/serido/')
     process(this_region, time_ranges[this_region], shape_files[this_region], regions[this_region])
