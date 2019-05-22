@@ -73,8 +73,8 @@ def calculate_ndvi(raster_path, output_path = "ndvi_scenes/", normalize_output_p
 		else:
 			errorHandler.throwError( 'Calculate NDVI', exit_code )
 	
-	for raster in raster_path:
-		os.system('rm -rf ' + raster)
+	#for raster in raster_path:
+		#os.system('rm -rf ' + raster)
 
 	os.system('rm -rf ' + output_path)
 

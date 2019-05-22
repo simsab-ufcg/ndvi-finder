@@ -35,7 +35,7 @@ if __name__ == '__main__':
         if not os.path.isfile('.secretFlag'):
             os.system("find . -iname '.secretFlag' | xargs -n 1 rm -rf")
             os.system("echo '' >.secretFlag")
-        regions = downloader.parse_path_and_rows('samples/small/path_row.txt').keys()
+        regions = downloader.parse_path_and_rows('samples/serido/path_row.txt').keys()
         main(regions)
         os.system('rm .secretFlag')
     else:

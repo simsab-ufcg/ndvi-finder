@@ -43,7 +43,7 @@ def process(region, time_range, shape_files, scenes):
 
         os.system("echo '' >"+ region_path + getPathRow(int(scene['path']), int(scene['row'])) + '/.secretFlag')
 
-    os.system(' '.join(['mkdir', region_path + 'bestMerge/']))
+    os.system(' '.join(['mkdir -p ', region_path + 'bestMerge/']))
     merged_ndvi_result = mergeTool.bestMerge(path_row_raster, "", region_path + 'bestMerge/T', region_path)[0]
     sub_region_raster = crop.crop ( merged_ndvi_result, shape_files , region)
     os.system("echo '' >serido/" + region + '/.secretFlag')
